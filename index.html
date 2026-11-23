@@ -19,10 +19,13 @@ h1{font-size:20px;margin:4px 0}h2{font-size:15px;margin:0 0 8px}.s{color:var(--m
 .bars .st{width:100%;display:flex;flex-direction:column-reverse;border-radius:4px;overflow:hidden}
 .sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}td,th{padding:6px 4px;text-align:right;border-bottom:1px solid #2a2e3d}th{color:var(--mut);font-weight:500;font-size:12px}th:first-child,td:first-child{text-align:left}
 input,textarea{background:transparent;color:var(--tx);border:1px solid #444a5e;border-radius:6px;padding:4px;font-size:13px}td input{width:78px;text-align:right}
+.br{display:flex;align-items:center;gap:8px;margin:5px 0}.br .l{width:128px;font-size:12px;flex:none}.br .bw{flex:1;background:var(--bg);border-radius:6px;height:14px;overflow:hidden;white-space:nowrap}.br .bw i{height:100%}.br b{width:92px;text-align:right;font-size:12px;flex:none;font-weight:600}
+.sk{display:flex;height:22px;border-radius:11px;overflow:hidden}details summary{cursor:pointer}
+@media(max-width:520px){.br .l{width:92px}.br b{width:78px}}
 </style></head><body>
-<h1>Mon portefeuille</h1><div class="s" id="sub"></div><div class="tabs" id="nav" style="margin:10px 0"><button data-t="pf" class="on">Portefeuille</button><button data-t="ac">Actus</button><button data-t="fu">À surveiller</button></div>
+<h1>Mon portefeuille</h1><div class="s" id="sub"></div><div class="tabs" id="nav" style="margin:10px 0"><button data-t="pf" class="on">Portefeuille</button><button data-t="ac">Actus</button><button data-t="fu">À surveiller</button><button data-t="ex2">Explorer</button></div>
 <div class="pf card kp" id="kp" style="margin-top:10px"></div>
-<div class="pf card"><h2>Carte thermique</h2><div class="tabs" id="tabs"></div><div id="map"></div><div class="s" id="note" style="margin-top:6px"></div></div>
+<div class="pf card"><h2>Carte thermique</h2><div class="tabs" id="modes"></div><div class="tabs" id="tabs"></div><div id="map"></div><div class="s" id="note" style="margin-top:6px"></div><div id="dr"></div></div>
 <div class="pf card"><h2>Répartition</h2><div class="al" id="al"></div><div class="lg" id="lg"></div></div>
 <div class="pf card"><h2>Positions</h2><div class="sc"><table id="tb"></table></div></div>
 <div class="pf card"><h2>Versements par mois (achats)</h2><div class="bars" id="bars"></div><div class="lg" id="lg2" style="margin-top:8px"></div></div>
@@ -33,6 +36,7 @@ input,textarea{background:transparent;color:var(--tx);border:1px solid #444a5e;b
 <div class="pf card"><button class="btn" id="ex">⬇️ Exporter mes positions (CSV)</button></div>
 <div class="pf card"><h2>📥 Importer mon CSV Trade Republic</h2><p class="s">Exportation_de_transactions.csv : le site recalcule positions, prix moyens et versements. À refaire quand tu veux mettre à jour (tes valeurs saisies sont gardées).</p><input type="file" id="csvf" accept=".csv,text/csv"><div class="s" id="csvm" style="margin-top:6px"></div></div>
 <div class="pf card"><h2>Journal des cours</h2><p class="s">Colle le JSON du script Colab (perf du jour par actif) pour alimenter 1 jour, 3 jours, lundi→lundi et 1 mois.</p><textarea id="imp" rows="3" style="width:100%"></textarea><br><button class="btn" id="impb" style="margin-top:6px">Importer</button></div>
+<div id="ex2" style="display:none"></div>
 <div id="ac" style="display:none">
 <div class="card"><h2>📰 Ce qui se passe</h2><p class="s">Résumé du 23/11/2026, d'après la presse financière. Pas un conseil.</p>
 <p><b>Vendredi 20/11 : forte baisse partout.</b> Actions US, CAC 40 (sous 8 000), Bitcoin (sous 60 000 $ pour la 1re fois depuis 140 jours) et même l'or ont baissé ensemble. Nasdaq : environ -4 à -5 % selon les sources.</p>
@@ -51,10 +55,17 @@ input,textarea{background:transparent;color:var(--tx);border:1px solid #444a5e;b
 <div class="card"><h2>⚡ Valeurs qui peuvent bouger fort cette semaine</h2><p class="s">Le jour des résultats, un titre peut faire +10 % ou -10 %. Personne ne sait dans quel sens : c'est un jour à risque, pas une promesse de hausse.</p><p>• <b>Lun 23 (après clôture)</b> : Zoom, HPE, Agilent, Jacobs. En France : Valneva, Trigano.<br>• <b>Mar 24 (avant ouverture)</b> : Medtronic, Analog Devices, Best Buy, Dollar Tree.<br>• <b>Mar 24 (après clôture)</b> : Dell, Workday, HP, Autodesk.<br>• <b>Mer 25</b> : Deere (avant ouverture).</p><p class="s">Les petites valeurs qui « explosent » sur une rumeur ou sur les réseaux sont souvent les premières à s'effondrer après. Ne mets que ce que tu peux perdre, et vérifie d'où vient la hausse.</p></div>
 <div class="card"><h2>🧭 Pour te renseigner</h2><p>Regarde la date des résultats d'une entreprise avant d'acheter, les avis d'analystes (et leurs raisons), et si la hausse vient d'une vraie nouvelle ou d'une rumeur. Un titre qui monte vite sur une rumeur peut redescendre aussi vite.</p></div></div>
 <script>
+function showErr(e){var b=document.getElementById("errb");if(!b){b=document.createElement("div");b.id="errb";b.style.cssText="background:#7a2a2a;color:#fff;padding:8px 10px;border-radius:8px;margin:8px 0;font-size:12px";document.body.insertBefore(b,document.body.firstChild)}b.textContent="Erreur sur la page : "+(e&&e.message||e)}
+window.addEventListener("error",function(ev){showErr(ev.error||ev.message)});
+function showTab(t){document.querySelectorAll("#nav button").forEach(function(x){x.className=x.dataset.t==t?"on":""});document.querySelectorAll(".pf").forEach(function(e){e.style.display=t=="pf"?"":"none"});["ac","fu","ex2"].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display=t==i?"":"none"});try{if(t=="pf")render();if(t=="ex2")renderEx()}catch(e){showErr(e)}}
+document.getElementById("nav").addEventListener("click",function(ev){var b=ev.target&&ev.target.closest?ev.target.closest("button"):null;if(b&&b.dataset.t)showTab(b.dataset.t)});
 var A=[["Air Liquide", "AI", "Actions", 5.0, 0.02827, null], ["Alibaba Group", "BABA", "Actions", 79.99, 4.658087, null], ["Apple", "AAPL", "Actions", 5.0, 0.024715, null], ["Avenir Telecom", "ATEL", "Actions", 10.79, 73.055555, null], ["Bitcoin", "BTC", "Crypto", 481.43, 0.006906, 385.05], ["Core S&P 500", "SPX", "ETF & Or", 400.0, 0.584314, 408.52], ["Core Stoxx Europe 600", "SXXP", "ETF & Or", 280.0, 0.906735, 282.77], ["Ethereum", "ETH", "Crypto", 138.0, 0.065528, 102.58], ["Fluence Energy", "FLNC", "Actions", 15.0, 0.824175, null], ["Hedera", "HBAR", "Crypto", 70.0, 888.647144, 41.59], ["LVMH Moët Hennessy", "LVMH", "Actions", 10.0, 0.015817, null], ["MSCI Africa Top 50", "AFR", "ETF & Or", 84.99, 8.590099, 72.76], ["MSCI Emerging Markets", "EM", "ETF & Or", 315.0, 43.958392, 297.16], ["Physical Gold", "GOLD", "ETF & Or", 176.0, 1.19912, 156.68], ["Render", "RNDR", "Crypto", 132.97, 86.895327, 103.66], ["Safran", "SAF", "Actions", 539.0, 1.722034, 515.4], ["Solana", "SOL", "Crypto", 60.0, 0.708629, 46.59], ["SpaceX", "SPCX", "Actions", 135.02, 1.097469, 132.75], ["Uranium", "URA", "ETF & Or", 45.0, 1.569853, null], ["XRP", "XRP", "Crypto", 106.0, 80.844158, 68.95], ["Private Equity (Apollo)", "APO", "Actions", 284.0, 1.75, 289.69]],M={"2025-09": {"Actions": 31.0, "Crypto": 4.93}, "2025-10": {"Actions": -0.0}, "2025-12": {"Actions": 18.0, "Crypto": 61.92}, "2026-01": {"Actions": 80.78, "Crypto": 48.97, "ETF & Or": 20.0}, "2026-02": {"Actions": 369.0, "Crypto": 59.93, "ETF & Or": 199.99}, "2026-03": {"Actions": 15.0, "Crypto": 69.96, "ETF & Or": 291.0}, "2026-04": {"Actions": 165.0, "Crypto": 34.96, "ETF & Or": 55.0}, "2026-05": {"Actions": 30.0, "Crypto": 74.95, "ETF & Or": 140.0}, "2026-06": {"Actions": 170.02, "Crypto": 109.96, "ETF & Or": 130.0}, "2026-07": {"Actions": -0.0}, "2026-08": {"Actions": -0.0, "Crypto": 113.0}, "2026-09": {"Actions": 15.0, "Crypto": 74.95, "ETF & Or": 145.0}, "2026-10": {"Actions": 30.0, "Crypto": 229.89, "ETF & Or": 120.0}, "2026-11": {"Actions": 20.0, "Crypto": 104.98, "ETF & Or": 200.0}};
-var T=[["Depuis l'achat",0],["1 jour",1],["3 jours",3],["Lundi → lundi",7],["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]],CL={"Crypto":"var(--c1)","ETF & Or":"var(--c2)","Actions":"var(--c3)"},cur=0;
+var T=[["Depuis l'achat",0],["1 jour",1],["3 jours",3],["Lundi → lundi",7],["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]],CL={"Crypto":"var(--c1)","ETF & Or":"var(--c2)","Actions":"var(--c3)"},cur=0,mode=0;
 var L={},O={};try{L=JSON.parse(localStorage.getItem("pf4")||"{}");O=JSON.parse(localStorage.getItem("pf5")||"{}")}catch(e){}
-var PX={};function val(a){return O[a[1]]!=null?O[a[1]]:(PX[a[1]]!=null?Math.round(PX[a[1]]*a[4]*100)/100:a[5])}
+var PX={},SUS={};function val(a){var k=a[1];if(O[k]!=null)return O[k];var p=PX[k];if(p==null)return a[5];var v=Math.round(p*a[4]*100)/100;
+ if(a[5]!=null&&(v>a[5]*1.5||v<a[5]/1.5)){SUS[k]=1;return a[5]}
+ if(a[5]==null&&p/(a[3]/a[4])>4){SUS[k]=1;return null}
+ return v}
 function per(k,N){var ds=Object.keys(L).sort().filter(function(d){return L[d][k]!=null});if(!ds.length)return null;var ref=new Date(ds[ds.length-1]),p=1,n=0;ds.forEach(function(d){if((ref-new Date(d))/864e5<N&&L[d][k]!=null){p*=1+L[d][k]/100;n++}});return n?(p-1)*100:null}
 function pc(a){var v=val(a);if(cur==0)return v==null?null:(v/a[3]-1)*100;return per(a[1],T[cur][1])}
 function col(p){if(p===null)return"#3a3f50";var a=Math.min(Math.abs(p)/(T[cur][1]==0||T[cur][1]>=30?20:4),1);return p>=0?"rgb("+Math.round(35-10*a)+","+Math.round(95+55*a)+",55)":"rgb("+Math.round(110+60*a)+","+Math.round(60-20*a)+","+Math.round(60-20*a)+")"}
@@ -65,15 +76,23 @@ function sq(items,x,y,w,h,out){if(!items.length)return;if(items.length==1){out.p
  var rest=items.slice(row.length);if(hz)sq(rest,x+len,y,w-len,h,out);else sq(rest,x,y+len,w,h-len,out)}
 function f(x,d){return(x>=0?"+":"")+x.toFixed(d==null?2:d)}
 function render(){
+ SUS={};
  var V=0,C=0,CK=0;A.forEach(function(a){var v=val(a);if(v!=null){V+=v;CK+=a[3]}C+=a[3]});var G=V-CK;
  document.getElementById("sub").textContent=A.length+" positions · investi "+C.toFixed(0)+" € (hors cours manquants)";
  document.getElementById("kp").innerHTML="<div><span class='s'>Valeur</span><b>"+V.toFixed(0)+" €</b></div><div><span class='s'>Investi</span><b>"+CK.toFixed(0)+" €</b></div><div><span class='s'>Gain / perte</span><b class='"+(G>=0?"up":"dn")+"'>"+f(G,0)+" € ("+f(G/CK*100,1)+" %)</b></div>";
+ var md=document.getElementById("modes");md.innerHTML="";["Par actif","Par catégorie"].forEach(function(t,i){var b=document.createElement("button");b.textContent=t;if(i==mode)b.className="on";b.onclick=function(){mode=i;render()};md.appendChild(b)});
  var tb=document.getElementById("tabs");tb.innerHTML="";T.forEach(function(t,i){var b=document.createElement("button");b.textContent=t[0];if(i==cur)b.className="on";b.onclick=function(){cur=i;render()};tb.appendChild(b)});
  var it=A.filter(function(a){return val(a)!=null}).map(function(a){return{k:a[1],n:a[0],v:val(a),p:pc(a)}}).sort(function(a,b){return b.v-a.v});
- var m=document.getElementById("map"),out=[];m.innerHTML="";sq(it,0,0,m.clientWidth,m.clientHeight,out);
- out.forEach(function(o){var r=o[0],e=document.createElement("div");e.className="c";e.style.cssText="left:"+o[1]+"px;top:"+o[2]+"px;width:"+o[3]+"px;height:"+o[4]+"px;background:"+col(r.p);e.innerHTML="<b>"+r.k+"</b>"+(o[3]>95&&o[4]>52?r.n+"<br>":"")+"<i>"+(r.p===null?"—":f(r.p)+" %")+"</i>";m.appendChild(e)});
+ var mi=it.filter(function(x){return x.v/V>=0.015}),sm=it.filter(function(x){return x.v/V<0.015});
+ if(sm.length>=2){var sv=0,sc=0,wp=0,wn=0;sm.forEach(function(x){var q=A.filter(function(a){return a[1]==x.k})[0];sv+=x.v;sc+=q[3];if(x.p!==null){wp+=x.p*x.v;wn+=x.v}});mi.push({k:"Autres",n:sm.map(function(x){return x.k}).join(", "),mem:sm.map(function(x){return x.k}),v:sv,p:cur==0?(sv/sc-1)*100:(wn?wp/wn:null)});mi.sort(function(a,b){return b.v-a.v})}else mi=it;
+ if(mode==1){var GR=function(a){return a[1]=="APO"?"Private equity":a[1]=="GOLD"?"Or":a[2]=="ETF & Or"?"ETF":a[2]},g={};
+  it.forEach(function(x){var a=A.filter(function(q){return q[1]==x.k})[0],c=GR(a);g[c]=g[c]||{v:0,c:0,wp:0,wn:0,m:[]};g[c].m.push(x.k);g[c].v+=x.v;g[c].c+=a[3];if(x.p!==null){g[c].wp+=x.p*x.v;g[c].wn+=x.v}});
+  mi=Object.keys(g).map(function(c){var o=g[c];return{k:c,n:Math.round(o.v/V*100)+" % du total · "+Math.round(o.v)+" €",mem:o.m,v:o.v,p:cur==0?(o.v/o.c-1)*100:(o.wn?o.wp/o.wn:null)}}).sort(function(a,b){return b.v-a.v})}
+ var m=document.getElementById("map"),out=[];m.innerHTML="";sq(mi,0,0,m.clientWidth,m.clientHeight,out);
+ out.forEach(function(o){var r=o[0],e=document.createElement("div");e.className="c";e.title=r.n+" : "+(r.p===null?"—":f(r.p)+" %");e.style.cssText="left:"+o[1]+"px;top:"+o[2]+"px;width:"+o[3]+"px;height:"+o[4]+"px;background:"+col(r.p);e.innerHTML="<b>"+r.k+"</b>"+(o[3]>95&&o[4]>52?r.n+"<br>":"")+"<i>"+(r.p===null?"—":f(r.p)+" %")+"</i>";e.style.cursor="pointer";e.onclick=function(){drill={t:r.k,mem:r.mem||[r.k]};renderDr()};if(drill&&drill.t==r.k)e.style.outline="2px solid #fff";m.appendChild(e)});
  var nd=A.filter(function(a){return cur>0&&pc(a)===null&&val(a)!=null}).length,nv=A.filter(function(a){return val(a)==null}).length;
- document.getElementById("note").textContent=(nd?nd+" actifs sans cours pour cette période (gris). ":"")+(nv?nv+" actifs sans valeur actuelle : renseigne-la dans le tableau.":"");
+ document.getElementById("note").textContent=(nd?nd+" actifs sans cours pour cette période (gris). ":"")+(nv?nv+" actifs sans valeur actuelle : renseigne-la dans le tableau.":"")+(Object.keys(SUS).length?" ⚠ Cours incohérent ignoré pour "+Object.keys(SUS).join(", ")+" : vérifie le ticker dans fetch.py.":"");
+ renderDr();
  var cl={};it.forEach(function(x){var c=A.filter(function(a){return a[1]==x.k})[0][2];cl[c]=(cl[c]||0)+x.v});
  document.getElementById("al").innerHTML=Object.keys(cl).map(function(c){return"<div style='width:"+cl[c]/V*100+"%;background:"+CL[c]+"'></div>"}).join("");
  document.getElementById("lg").innerHTML=Object.keys(cl).map(function(c){return"<span style='--cc:"+CL[c]+"'>"+c+" "+(cl[c]/V*100).toFixed(0)+" %</span>"}).join("");
@@ -84,7 +103,7 @@ function render(){
  document.getElementById("bars").innerHTML=ms.map(function(k){var tt=0,st="";["Actions","ETF & Or","Crypto"].forEach(function(c){var x=M[k][c]||0;tt+=x;st+="<div style='height:"+x/mx*110+"px;background:"+CL[c]+"'></div>"});return"<div class='m'>"+tt.toFixed(0)+"<div class='st'>"+st+"</div>"+k.slice(5)+"/"+k.slice(2,4)+"</div>"}).join("");
  document.getElementById("lg2").innerHTML=Object.keys(CL).map(function(c){return"<span style='--cc:"+CL[c]+"'>"+c+"</span>"}).join("")}
 document.getElementById("impb").onclick=function(){try{var o=JSON.parse(document.getElementById("imp").value);Object.keys(o).forEach(function(d){L[d]=Object.assign(L[d]||{},o[d])});localStorage.setItem("pf4",JSON.stringify(L));document.getElementById("imp").value="";render()}catch(e){alert("JSON invalide")}};
-window.onresize=render;render();
+window.onresize=function(){try{render()}catch(e){showErr(e)}};try{render()}catch(e){showErr(e)}
 var _r=render;render=function(){_r();tools()};
 function tools(){
  var V=0,cl={},top=null;A.forEach(function(a){var v=val(a);if(v!=null){V+=v;cl[a[2]]=(cl[a[2]]||0)+v;if(!top||v>top[1])top=[a[0],v]}});
@@ -109,7 +128,6 @@ document.getElementById("ex").onclick=function(){var c="actif;code;classe;invest
 
 var KM={"Safran": ["SAF", "Safran"], "Core S&P 500 USD (Acc)": ["SPX", "Core S&P 500"], "MSCI Emerging Markets EUR (Acc)": ["EM", "MSCI Emerging Markets"], "Core Stoxx Europe 600 EUR (Acc)": ["SXXP", "Core Stoxx Europe 600"], "Physical Gold": ["GOLD", "Or (Physical Gold)"], "SpaceX": ["SPCX", "SpaceX"], "MSCI Africa Top 50 Swap USD (Acc)": ["AFR", "MSCI Africa Top 50"], "Bitcoin": ["BTC", "Bitcoin"], "Render": ["RNDR", "Render"], "Ethereum": ["ETH", "Ethereum"], "XRP": ["XRP", "XRP"], "Solana": ["SOL", "Solana"], "Hedera": ["HBAR", "Hedera"], "Alibaba Group": ["BABA", "Alibaba Group"], "Avenir Telecom": ["ATEL", "Avenir Telecom"], "Fluence Energy": ["FLNC", "Fluence Energy"], "LVMH Moët Hennessy": ["LVMH", "LVMH"], "Uranium USD (Acc)": ["URA", "Uranium"], "Air Liquide": ["AI", "Air Liquide"], "Apple": ["AAPL", "Apple"], "Private Equity": ["APO", "Private Equity (Apollo)"]};
 try{var S=JSON.parse(localStorage.getItem("pf6")||"null");if(S){A=S.A;M=S.M}}catch(e){}
-document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#nav button").forEach(function(x){x.className=x==b?"on":""});var t=b.dataset.t;document.querySelectorAll(".pf").forEach(function(e){e.style.display=t=="pf"?"":"none"});document.getElementById("ac").style.display=t=="ac"?"":"none";document.getElementById("fu").style.display=t=="fu"?"":"none";if(t=="pf")render()}});
 function pcsv(t){var r=[],row=[],c="",q=false;for(var i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==","){row.push(c);c=""}else if(ch=="\n"){row.push(c);r.push(row);row=[];c=""}else if(ch!="\r")c+=ch}if(c!==""||row.length){row.push(c);r.push(row)}return r}
 document.getElementById("csvf").onchange=function(e){var fl=e.target.files[0];if(!fl)return;var rd=new FileReader();rd.onload=function(){try{
  var R=pcsv(String(rd.result)),H=R[0],ix={};H.forEach(function(h,i){ix[h]=i});
@@ -127,4 +145,127 @@ fetch("data/portfolio.json?"+Date.now()).then(function(r){return r.json()}).then
 fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PX=j.px||{};Object.keys(j.hist||{}).forEach(function(d){L[d]=Object.assign(L[d]||{},j.hist[d])});document.getElementById("sub").textContent+=" · cours du "+j.updated;render()}).catch(function(){});
 fetch("news.html?"+Date.now()).then(function(r){return r.text()}).then(function(t){var p=t.split("<!--FU-->");document.getElementById("ac").innerHTML=p[0];document.getElementById("fu").innerHTML=p[1]||""}).catch(function(){});
 render();
+/* ===== Onglet Explorer : l'intérieur des ETF et des cryptos ===== */
+var PAL=["#4b8fe0","#f2a93b","#a56be0","#3fa35a","#c24b4b","#38b2ac","#8d93a6"],exSel="SPX";
+var EXD={
+SPX:{nom:"Core S&P 500",sub:"Les 500 plus grandes entreprises américaines",ter:"0,07 %",n:"503",t10:37.8,src:"justETF, 26/10/2026",
+ pays:[["États-Unis",97.48],["Irlande",1.15],["Autres",1.37]],
+ sect:[["Technologie",45.2],["Finance",13.6],["Santé",9.1],["Conso. de base",8.9],["Autres",23.2]],
+ top:[["NVIDIA",8.07],["Apple",7.03],["Microsoft",5.69],["Amazon",3.84],["Alphabet",5.39],["Broadcom",2.65],["Meta",1.90],["Micron",1.63],["Tesla",1.56]],
+ note:"10 entreprises pèsent 38 % du fonds, et NVIDIA + Apple + Microsoft à elles trois environ 21 %. Avec 45 % de technologie, tu es surtout exposé à l'IA américaine, pas à « toute l'économie »."},
+EM:{nom:"MSCI Emerging Markets",sub:"Actions des pays émergents (Amundi, réplication par swap)",ter:"0,20 %",n:"≈ 1 170",t10:38.9,src:"fonds MSCI EM, 11/11/2026",
+ pays:[["Taïwan",28.8],["Corée du Sud",21.3],["Chine",17.7],["Inde",10.6],["Autres",21.6]],
+ sect:[["Technologie",46.6],["Finance",21.1],["Autres",32.3]],
+ top:[["TSMC",15.57],["Samsung",7.53],["SK hynix",5.88],["Tencent",2.73],["Alibaba",1.85],["MediaTek",1.81],["Delta Electronics",0.94],["China Construction Bank",0.85],["Hon Hai",0.79]],
+ note:"TSMC pèse à elle seule près de 16 %. Taïwan + Corée font 50 % de l'indice : les « émergents » sont devenus en grande partie un pari sur les puces électroniques. La Chine ne représente plus que 17,7 %."},
+SXXP:{nom:"Core Stoxx Europe 600",sub:"600 grandes entreprises européennes",ter:"0,07 à 0,20 % selon la version",n:"≈ 600",t10:19.5,src:"iShares / TradingView, 2026",
+ pays:null,
+ sect:[["Finance",23.9],["Santé",13.3],["Autres",62.8]],
+ top:[["ASML",4.48],["HSBC",2.23],["Roche",1.94],["AstraZeneca",1.83],["Novartis",1.81]],
+ note:"Le plus diversifié de tes ETF : aucune entreprise ne dépasse environ 4,5 %. Finance et santé font 37 % à elles deux. Attention : l'Europe du STOXX 600 inclut le Royaume-Uni et la Suisse, pas seulement la zone euro."},
+AFR:{nom:"MSCI Africa Top 50",sub:"Les plus grandes entreprises d'Afrique",ter:"≈ 0,65 %",n:"39",t10:null,src:"MSCI, 29/05/2026",
+ pays:[["Afrique du Sud",42.79],["Maroc",32.57],["Égypte",16.88],["Kenya",7.77]],
+ sect:null,top:null,
+ note:"Marché de niche : trois pays (Afrique du Sud, Maroc, Égypte) font 92 % de l'indice, avec seulement 39 entreprises. Ces ETF sont souvent répliqués par swap (réplication synthétique) et coûtent plus cher que les ETF classiques."},
+GOLD:{nom:"Physical Gold",sub:"Or physique",ter:"—",n:"—",t10:null,src:"—",pays:null,sect:null,top:null,
+ note:"Pas de composition à regarder : le fonds détient de l'or physique en lingots, donc aucune entreprise derrière. L'or ne verse ni dividende ni intérêt, son prix dépend surtout du dollar et des taux réels."},
+URA:{nom:"Uranium",sub:"Mineurs d'uranium (composition type : Sprott Uranium Miners)",ter:"≈ 0,85 %",n:"43",t10:75.0,src:"Trackinsight, 30/09/2026",
+ pays:null,
+ sect:[["Mineurs (énergie)",74.3],["Fonds d'uranium physique",13.7],["Industrie",7.7],["Autres",4.3]],
+ top:[["Kazatomprom",16.05],["Cameco",15.30],["Sprott Physical Uranium",13.73],["Paladin Energy",5.07],["NexGen",4.69],["Yellow Cake",4.50],["Denison",4.28],["Uranium Energy",4.14],["Deep Yellow",3.71],["Energy Fuels",3.50]],
+ note:"Très concentré : 3 lignes font 45 % du fonds. Ce sont des petites sociétés minières très sensibles au prix de l'uranium. Ce profil est celui d'un ETF type : vérifie que c'est bien le tien."}
+};
+var CRY={
+BTC:["Bitcoin","Réserve de valeur","Offre plafonnée à 21 millions, sécurisé par des mineurs (preuve de travail). Souvent comparé à de l'or numérique.","Très lié aux flux des ETF Bitcoin US et à la liquidité mondiale."],
+ETH:["Ethereum","Plateforme de contrats","Réseau sur lequel tournent la finance décentralisée, les stablecoins et les NFT. Sécurisé par la mise en jeu d'ETH (preuve d'enjeu).","Concurrence d'autres blockchains, usage et frais variables."],
+XRP:["XRP","Paiements","Conçu pour les transferts internationaux rapides entre banques et entreprises. L'offre de départ (100 milliards) a été créée d'un coup et en partie gardée par Ripple.","Dépend d'une entreprise (Ripple) et du cadre réglementaire."],
+SOL:["Solana","Blockchain rapide","Réseau à frais très bas et à grande vitesse, utilisé pour les paiements, les mèmecoins et la finance décentralisée.","Pannes passées, forte concurrence avec Ethereum."],
+RNDR:["Render","IA / puissance GPU","Place de marché où des particuliers louent la puissance de leurs cartes graphiques pour du rendu 3D et de l'IA. Le jeton sert à payer.","Très sensible à l'enthousiasme (ou au doute) sur l'IA."],
+HBAR:["Hedera","Réseau d'entreprises","Réseau géré par un conseil de grandes entreprises (Google, IBM…). Offre maximale de 50 milliards de jetons.","Moins décentralisé que Bitcoin ou Ethereum."]
+};
+function fm(x,d){return x.toFixed(d==null?1:d).replace(".",",")}
+function bars(rows,fmt,col){var mx=Math.max.apply(null,rows.map(function(r){return r[1]}))||1;return rows.map(function(r){return "<div class='br'><span class='l'>"+r[0]+"</span><div class='bw'><i style='width:"+r[1]/mx*100+"%;background:"+(col||"var(--c2)")+"'></i></div><b>"+fmt(r[1])+"</b></div>"}).join("")}
+function stack(rows){var t=rows.reduce(function(a,r){return a+r[1]},0)||1;return "<div class='sk'>"+rows.map(function(r,i){return "<div title='"+r[0]+" "+fm(r[1])+" %' style='width:"+r[1]/t*100+"%;background:"+PAL[i%PAL.length]+"'></div>"}).join("")+"</div><div class='lg' style='margin-top:6px'>"+rows.map(function(r,i){return "<span style='--cc:"+PAL[i%PAL.length]+"'>"+r[0]+" "+fm(r[1])+" %</span>"}).join("")+"</div>"}
+function valK(k){var a=A.filter(function(q){return q[1]==k})[0];return a?val(a):null}
+function ser(k){return Object.keys(L).sort().filter(function(d){return L[d][k]!=null}).map(function(d){return[d,L[d][k]]})}
+function cst(k,ref,per){var s=ser(k);if(s.length<30)return null;var v=s.map(function(x){return x[1]}),m=v.reduce(function(a,b){return a+b},0)/v.length,sd=Math.sqrt(v.reduce(function(a,b){return a+(b-m)*(b-m)},0)/(v.length-1)),r={vol:sd*Math.sqrt(per),worst:Math.min.apply(null,v),n:v.length,corr:null,beta:null};
+ if(ref&&k!=ref){var rm={};ser(ref).forEach(function(x){rm[x[0]]=x[1]});var xs=[],ys=[];s.forEach(function(x){if(rm[x[0]]!=null){xs.push(rm[x[0]]);ys.push(x[1])}});if(xs.length>=30){var mx=xs.reduce(function(a,b){return a+b},0)/xs.length,my=ys.reduce(function(a,b){return a+b},0)/ys.length,sxy=0,sxx=0,syy=0;for(var i=0;i<xs.length;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)*(xs[i]-mx);syy+=(ys[i]-my)*(ys[i]-my)}if(sxx>0&&syy>0){r.corr=sxy/Math.sqrt(sxx*syy);r.beta=sxy/sxx}}}
+ return r}
+function renderEx(){
+ var el=document.getElementById("ex2");if(!el)return;
+ var V2=0;A.forEach(function(a){var v=val(a);if(v!=null)V2+=v});V2=V2||1;
+ var h="<div class='card'><h2>🔎 Explorer l'intérieur de ton portefeuille</h2><p class='s'>Compositions issues de sources publiques (justETF, MSCI, Trackinsight), 2026. Elles changent peu d'un mois à l'autre mais ne sont pas en direct. Pas un conseil.</p></div>";
+ /* 1. Ce que tu possèdes vraiment */
+ var vE={};["SPX","EM","SXXP","AFR"].forEach(function(k){vE[k]=valK(k)});
+ var co={};["SPX","EM","SXXP"].forEach(function(k){if(vE[k]==null)return;EXD[k].top.forEach(function(t){co[t[0]]=co[t[0]]||{e:0,d:0};co[t[0]].e+=vE[k]*t[1]/100})});
+ A.forEach(function(a){var v=val(a);if(a[2]!="Actions"||v==null)return;var n=a[1]=="BABA"?"Alibaba":a[0];co[n]=co[n]||{e:0,d:0};co[n].d+=v});
+ var cr=Object.keys(co).map(function(n){return[n,co[n].e+co[n].d,co[n].d,co[n].e]}).sort(function(a,b){return b[1]-a[1]}).slice(0,12),mx=cr.length?cr[0][1]:1;
+ h+="<div class='card'><h2>🏢 Les entreprises derrière tes lignes</h2><p class='s'>Tes actions directes + ce que tes ETF détiennent. Vue partielle : seulement les plus grosses lignes de chaque ETF.</p>"+
+  cr.map(function(r){return "<div class='br'><span class='l'>"+r[0]+"</span><div class='bw'><i style='width:"+r[2]/mx*100+"%;background:var(--c3);border-radius:6px 0 0 6px;display:inline-block'></i><i style='width:"+r[3]/mx*100+"%;background:var(--c2);border-radius:0 6px 6px 0;display:inline-block'></i></div><b style='width:96px'>"+Math.round(r[1])+" € · "+fm(r[1]/V2*100)+" %</b></div>"}).join("")+
+  "<div class='lg' style='margin-top:8px'><span style='--cc:var(--c3)'>en direct</span><span style='--cc:var(--c2)'>via tes ETF</span></div></div>";
+ var geo={},gt=0;function ad(n,v){if(v>0){geo[n]=(geo[n]||0)+v;gt+=v}}
+ if(vE.SPX!=null)EXD.SPX.pays.forEach(function(p){ad(p[0]=="États-Unis"?"États-Unis":"Autres",vE.SPX*p[1]/100)});
+ if(vE.EM!=null)EXD.EM.pays.forEach(function(p){ad(p[0]=="Autres"?"Autres émergents":p[0],vE.EM*p[1]/100)});
+ if(vE.SXXP!=null)ad("Europe",vE.SXXP);if(vE.AFR!=null)ad("Afrique",vE.AFR);
+ var gr=Object.keys(geo).map(function(k){return[k,geo[k]]}).sort(function(a,b){return b[1]-a[1]});
+ var tech=0,tb=0;["SPX","EM"].forEach(function(k){if(vE[k]!=null){tb+=vE[k];tech+=vE[k]*EXD[k].sect[0][1]/100}});
+ h+="<div class='card'><h2>🌍 Où est investi l'argent de tes ETF</h2><p class='s'>Parties ETF seulement (S&amp;P 500, MSCI EM, STOXX 600, Afrique), hors or, cryptos et actions directes.</p>"+bars(gr,function(v){return Math.round(v)+" € · "+fm(v/(gt||1)*100)+" %"})+
+  (tb?"<p style='margin:10px 0 0'>💻 <b>Technologie</b> : environ "+Math.round(tech)+" € de ton S&amp;P 500 + MSCI EM, soit "+fm(tech/tb*100,0)+" % de ces deux ETF.</p>":"")+"</div>";
+ /* 2. Zoom ETF */
+ h+="<div class='card'><h2>📦 Zoom sur un ETF</h2><div class='tabs'>"+Object.keys(EXD).map(function(k){return "<button data-ex='"+k+"' class='"+(k==exSel?"on":"")+"'>"+k+"</button>"}).join("")+"</div>";
+ var d=EXD[exSel],vv=valK(exSel);
+ h+="<div style='margin-bottom:8px'><b style='font-size:16px'>"+d.nom+"</b><div class='s'>"+d.sub+"</div></div><div class='kp' style='margin-bottom:10px'><div><span class='s'>Ta valeur</span><b>"+(vv==null?"—":Math.round(vv)+" €")+"</b></div><div><span class='s'>Entreprises</span><b>"+d.n+"</b></div><div><span class='s'>Top 10</span><b>"+(d.t10==null?"—":fm(d.t10,0)+" %")+"</b></div><div><span class='s'>Frais (TER)</span><b style='font-size:15px'>"+d.ter+"</b></div></div>";
+ if(d.top)h+="<div class='s' style='margin:6px 0 2px'>Plus grosses lignes</div>"+bars(d.top.slice().sort(function(a,b){return b[1]-a[1]}),function(v){return fm(v,2)+" %"},"var(--c1)");
+ if(d.pays)h+="<div class='s' style='margin:12px 0 4px'>Par pays</div>"+stack(d.pays);
+ if(d.sect)h+="<div class='s' style='margin:12px 0 4px'>Par secteur</div>"+stack(d.sect);
+ h+="<p style='margin:12px 0 4px'>💡 "+d.note+"</p><div class='s'>Source : "+d.src+"</div></div>";
+ /* 3. Cryptos */
+ var ck=["BTC","ETH","XRP","SOL","RNDR","HBAR"],cv=ck.map(function(k){return[k,valK(k)||0]}).filter(function(r){return r[1]>0}).sort(function(a,b){return b[1]-a[1]}),ct=cv.reduce(function(a,r){return a+r[1]},0)||1;
+ h+="<div class='card'><h2>₿ Tes cryptos de l'intérieur</h2><p class='s'>Poids de chaque coin dans ton bloc crypto ("+Math.round(ct)+" €, "+fm(ct/V2*100,0)+" % du portefeuille).</p>"+stack(cv.map(function(r){return[CRY[r[0]][0],r[1]/ct*100]}));
+ var bs=ck.map(function(k){return[k,cst(k,"BTC",365)]}),rows="<tr><th>Coin</th><th>Rôle</th><th>Volatilité / an</th><th>Corrél. BTC</th><th>Pire jour</th></tr>",bsum=0,bn=0;
+ bs.forEach(function(r){var c=CRY[r[0]],s=r[1];if(s&&s.beta!=null&&r[0]!="BTC"){bsum+=s.beta;bn++}rows+="<tr><td>"+c[0]+"</td><td>"+c[1]+"</td><td>"+(s?fm(s.vol,0)+" %":"—")+"</td><td>"+(s&&s.corr!=null?fm(s.corr,2):r[0]=="BTC"?"1":"—")+"</td><td class='dn'>"+(s?fm(s.worst,1)+" %":"—")+"</td></tr>"});
+ h+="<div class='sc' style='margin-top:10px'><table style='min-width:420px'>"+rows+"</table></div>";
+ var btcw=cv.length&&cv[0][0]=="BTC"?cv[0][1]/ct*100:0;
+ h+="<p style='margin:10px 0 0'>💡 "+(btcw?"Bitcoin ne pèse que "+fm(btcw,0)+" % de ton bloc crypto : "+fm(100-btcw,0)+" % est en altcoins. ":"")+(bn?"Sur la période disponible, quand BTC bouge de 1 %, tes altcoins bougent en moyenne de "+fm(bsum/bn,1)+" % dans le même sens : ils amplifient ses hausses et ses baisses.":"Les altcoins amplifient en général les mouvements du Bitcoin.")+"</p>";
+ h+="<div style='margin-top:10px'>"+ck.map(function(k){var c=CRY[k];return "<details style='margin:6px 0'><summary><b>"+c[0]+"</b> <span class='s'>· "+c[1]+"</span></summary><p style='margin:6px 0'>"+c[2]+"</p><p class='s' style='margin:0 0 6px'>Point de vigilance : "+c[3]+"</p></details>"}).join("")+"</div><p class='s'>Volatilité, corrélation et pire jour sont calculés sur l'historique de cours du site. Résumés simplifiés, pas un conseil.</p></div>";
+ el.innerHTML=h;
+ el.querySelectorAll("[data-ex]").forEach(function(b){b.onclick=function(){exSel=b.dataset.ex;renderEx()}})}
+
+/* ===== Détail d'une case (clic) : lignes + courbe ===== */
+var drill=null,drN=90;
+function dd(d){return d?d.slice(8,10)+"/"+d.slice(5,7):""}
+function renderDr(){
+ var el=document.getElementById("dr");if(!el)return;
+ if(!drill){el.innerHTML="<div class='s' style='margin-top:10px'>👆 Touche une case de la carte pour voir ses lignes et sa courbe.</div>";return}
+ var rows=drill.mem.map(function(k){var a=A.filter(function(q){return q[1]==k})[0];return a?{a:a,v:val(a)}:null}).filter(function(r){return r&&r.v!=null}).sort(function(x,y){return y.v-x.v});
+ if(!rows.length){el.innerHTML="";return}
+ var tot=rows.reduce(function(s,r){return s+r.v},0),cost=rows.reduce(function(s,r){return s+r.a[3]},0),g=tot-cost;
+ var dates=Object.keys(L).sort(),last=dates.length?dates[dates.length-1]:null;
+ var ds=last?dates.filter(function(d){return(new Date(last)-new Date(d))/864e5<drN}):[];
+ var lines=rows.map(function(r){var k=r.a[1],ix=1,pts=[0],has=false;ds.forEach(function(d){var p=L[d][k];if(p!=null){ix*=1+p/100;has=true}pts.push((ix-1)*100)});return{k:k,n:r.a[0],w:r.v,pts:pts,has:has}}).filter(function(l){return l.has});
+ var chart="",leg="";
+ if(lines.length&&ds.length>2){
+  var n=ds.length+1,W=lines.reduce(function(s,l){return s+l.w},0),cat=[];
+  for(var i=0;i<n;i++){var sm2=0;lines.forEach(function(l){sm2+=l.w*(1+l.pts[i]/100)});cat.push((sm2/W-1)*100)}
+  var thin=lines.length>1?lines.slice(0,6):[],all=cat.slice();thin.forEach(function(l){all=all.concat(l.pts)});
+  var mn=Math.min.apply(null,all.concat([0])),mx=Math.max.apply(null,all.concat([0])),VW=600,VH=210,pl=44,pr=8,pt=10,pb=22,
+  X=function(i){return pl+i/(n-1)*(VW-pl-pr)},Y=function(v){return pt+(mx-v)/((mx-mn)||1)*(VH-pt-pb)},
+  path=function(a){return a.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1)}).join("")};
+  chart="<svg viewBox='0 0 "+VW+" "+VH+"' style='width:100%;height:auto;display:block'>"+
+   [mx,0,mn].filter(function(v,i,a){return a.indexOf(v)==i}).map(function(v){return "<line x1='"+pl+"' x2='"+(VW-pr)+"' y1='"+Y(v)+"' y2='"+Y(v)+"' style='stroke:var(--mut);stroke-opacity:"+(v==0?.7:.25)+"' stroke-dasharray='"+(v==0?"0":"3 3")+"'/><text x='"+(pl-5)+"' y='"+(Y(v)+4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+fm(v,0)+" %</text>"}).join("")+
+   thin.map(function(l,i){return "<path d='"+path(l.pts)+"' fill='none' stroke='"+PAL[i%PAL.length]+"' stroke-width='1.3' opacity='.8'/>"}).join("")+
+   "<path d='"+path(cat)+"' fill='none' style='stroke:var(--tx)' stroke-width='2.6' stroke-linejoin='round'/>"+
+   "<text x='"+pl+"' y='"+(VH-6)+"' font-size='10' style='fill:var(--mut)'>"+dd(ds[0])+"</text><text x='"+(VW-pr)+"' y='"+(VH-6)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+dd(last)+"</text></svg>";
+  var fc=cat[n-1];
+  leg="<div class='lg' style='margin-top:6px'><span style='--cc:var(--tx)'><b>"+drill.t+"</b> <b class='"+(fc>=0?"up":"dn")+"'>"+f(fc,1)+" %</b></span>"+thin.map(function(l,i){var v=l.pts[l.pts.length-1];return "<span style='--cc:"+PAL[i%PAL.length]+"'>"+l.n+" <span class='"+(v>=0?"up":"dn")+"' style='--cc:transparent'>"+f(v,1)+" %</span></span>"}).join("")+"</div>";
+ }else chart="<div class='s' style='padding:14px 0'>Pas encore d'historique de cours pour ces lignes sur cette période.</div>";
+ var per=[["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]];
+ var h="<div style='margin-top:14px;border-top:1px solid #2a2e3d;padding-top:12px'><div style='display:flex;justify-content:space-between;align-items:flex-start;gap:8px'><div><h2 style='margin:0'>"+drill.t+(drill.t=="Autres"?" <span class='s'>("+rows.map(function(r){return r.a[1]}).join(", ")+")</span>":"")+"</h2><div class='s'>"+Math.round(tot)+" € · gain "+f(g,0)+" € ("+f(g/cost*100,1)+" %) depuis l'achat</div></div><button class='btn' id='drx'>✕</button></div>"+
+  "<div class='tabs' style='margin:10px 0 6px'>"+per.map(function(p){return "<button data-dn='"+p[1]+"' class='"+(p[1]==drN?"on":"")+"'>"+p[0]+"</button>"}).join("")+"</div>"+chart+leg+
+  "<p class='s' style='margin:6px 0 10px'>Courbe reconstituée avec tes poids actuels, hors versements : ce n'est pas ton historique réel.</p>"+
+  "<div class='sc'><table style='min-width:420px'><tr><th>Ligne</th><th>Valeur</th><th>Part</th><th>Gain</th></tr>"+rows.map(function(r){var gg=r.v-r.a[3];return "<tr><td>"+r.a[0]+"</td><td>"+r.v.toFixed(0)+" €</td><td>"+fm(r.v/tot*100,0)+" %</td><td class='"+(gg>=0?"up":"dn")+"'>"+f(gg,0)+" € ("+f(gg/r.a[3]*100,1)+" %)</td></tr>"}).join("")+"</table></div></div>";
+ el.innerHTML=h;
+ var x=document.getElementById("drx");if(x)x.onclick=function(){drill=null;render()};
+ el.querySelectorAll("[data-dn]").forEach(function(b){b.onclick=function(){drN=+b.dataset.dn;renderDr()}})}
+
 </script></body></html>
