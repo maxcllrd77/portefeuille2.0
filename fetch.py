@@ -4,6 +4,21 @@ T = {"SAF":"SAF.PA","SPX":"SXR8.DE","EM":["AMEM.DE","AEEM.PA"],"SXXP":"EXSA.DE",
      "BTC":"BTC-EUR","ETH":"ETH-EUR","XRP":"XRP-EUR","SOL":"SOL-EUR",
      "RNDR":"RENDER-USD","HBAR":"HBAR-USD","BABA":"9988.HK","AI":"AI.PA","LVMH":"MC.PA","AAPL":"AAPL","FLNC":"FLNC"}
 CUR = {"RENDER-USD":"USD","HBAR-USD":"USD","AAPL":"USD","FLNC":"USD","9988.HK":"HKD"}
+def news(t):
+    out = []
+    try:
+        for n in (yf.Ticker(t).news or [])[:3]:
+            c = n.get("content", n)
+            link = (c.get("canonicalUrl") or c.get("clickThroughUrl") or {}).get("url") or c.get("link")
+            src = (c.get("provider") or {}).get("displayName") or c.get("publisher", "")
+            d = (c.get("pubDate") or "")[:10]
+            if not d and c.get("providerPublishTime"):
+                d = datetime.date.fromtimestamp(c["providerPublishTime"]).isoformat()
+            if c.get("title") and link:
+                out.append({"t": c["title"], "l": link, "s": src, "d": d})
+    except Exception as e:
+        print("NEWS", t, e)
+    return out
 def close(t):
     c = yf.download(t, period="400d", progress=False, auto_adjust=True)["Close"].squeeze().dropna()
     if c.empty:
@@ -14,6 +29,7 @@ try:
     old = json.load(open("data/prices.json"))
 except Exception:
     old = {}
+nw = {}
 px, asof, hist, errors = dict(old.get("px", {})), dict(old.get("asof", {})), old.get("hist", {}), []
 fx = {"USD": close("EURUSD=X"), "HKD": close("EURHKD=X")}
 for k, cands in T.items():
@@ -27,6 +43,7 @@ for k, cands in T.items():
             asof[k] = str(c.index[-1].date())
             for d, v in (c.pct_change().dropna() * 100).items():
                 hist.setdefault(str(d.date()), {})[k] = round(float(v), 2)
+            nw[k] = news(t)
             ok = True
             break
         except Exception as e:
@@ -34,4 +51,5 @@ for k, cands in T.items():
     if not ok:
         errors.append(k)
 json.dump({"updated": datetime.date.today().isoformat(), "px": px, "asof": asof, "errors": errors, "hist": hist}, open("data/prices.json", "w"))
+json.dump(nw, open("data/news.json", "w"))
 print("OK", len(px), "actifs, erreurs :", errors)

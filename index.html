@@ -37,6 +37,7 @@ input,textarea{background:transparent;color:var(--tx);border:1px solid #444a5e;b
 <div class="pf card"><h2>📥 Importer mon CSV Trade Republic</h2><p class="s">Exportation_de_transactions.csv : le site recalcule positions, prix moyens et versements. À refaire quand tu veux mettre à jour (tes valeurs saisies sont gardées).</p><input type="file" id="csvf" accept=".csv,text/csv"><div class="s" id="csvm" style="margin-top:6px"></div></div>
 <div class="pf card"><h2>Journal des cours</h2><p class="s">Colle le JSON du script Colab (perf du jour par actif) pour alimenter 1 jour, 3 jours, lundi→lundi et 1 mois.</p><textarea id="imp" rows="3" style="width:100%"></textarea><br><button class="btn" id="impb" style="margin-top:6px">Importer</button></div>
 <div id="pr" class="card pf"></div>
+<div id="cv" class="card" style="display:none"></div>
 <div id="ex2" style="display:none"></div>
 <div id="ac" style="display:none">
 <div class="card"><h2>📰 Ce qui se passe</h2><p class="s">Résumé du 23/11/2026, d'après la presse financière. Pas un conseil.</p>
@@ -275,7 +276,7 @@ var PRM=null;
 fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PRM=j;renderPr()}).catch(function(){});
 function xirr(cf){var t0=cf[0][0];function g(r){return cf.reduce(function(s,c){return s+c[1]/Math.pow(1+r,(c[0]-t0)/315576e5)},0)}
  var lo=-0.99,hi=10;if(g(lo)*g(hi)>0)return null;for(var i=0;i<100;i++){var m=(lo+hi)/2;if(g(m)*g(lo)>0)lo=m;else hi=m}return(lo+hi)/2}
-function renderPr(){var el=document.getElementById("pr");if(!el)return;
+function renderPr(){var el=document.getElementById("pr");if(!el)return;if(typeof PAL==="undefined"||typeof SEUIL==="undefined")return;
  var vs=A.map(function(a){return{a:a,v:val(a)}}),V=0,C=0,VV=0;vs.forEach(function(x){V+=x.v!=null?x.v:x.a[3];if(x.v!=null)VV+=x.v;C+=x.a[3]});
  var org=function(a){var k=a[1];if(O[k]!=null)return"saisie manuelle";if(SUS[k])return"⚠ cours ignoré";if(PX[k]!=null)return"cours auto"+(PRM&&PRM.asof&&PRM.asof[k]?" ("+dd(PRM.asof[k])+")":"");return a[5]!=null?"valeur relevée":"sans valeur"};
  var al=[],age=PRM&&PRM.updated?(Date.now()-new Date(PRM.updated))/864e5:null;
@@ -295,5 +296,58 @@ function renderPr(){var el=document.getElementById("pr");if(!el)return;
   "<svg viewBox='0 0 "+W+" "+H2+"' style='width:100%;height:auto;display:block'><path d='"+pts.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1)}).join("")+"' fill='none' stroke='"+PAL[1]+"' stroke-width='2.4'/><circle cx='"+X(pts.length-1)+"' cy='"+Y(V)+"' r='5' fill='"+PAL[0]+"'/><text x='"+(pl-5)+"' y='"+(Y(mx)+4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+Math.round(mx)+" €</text><text x='"+pl+"' y='"+(H2-4)+"' font-size='10' style='fill:var(--mut)'>"+ks[0]+"</text><text x='"+(W-10)+"' y='"+(H2-4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+ks[ks.length-1]+"</text></svg>"+
   "<div class='lg' style='margin-top:6px'><span style='--cc:"+PAL[1]+"'>Capital versé cumulé</span><span style='--cc:"+PAL[0]+"'>Valeur actuelle</span></div><p class='s'>Le rendement annualisé tient compte des dates de tes versements (XIRR, versements supposés le 15 de chaque mois). Le gain simple les ignore. Valeur actuelle : lignes sans valeur comptées à leur prix de revient.</p>"}
  el.innerHTML=h}
+
+/* ===== 6 rubriques + Castor Vinci ===== */
+var TABS=[["db","Dashboard"],["pf","Portefeuille"],["an","Analyses"],["ac","Actualités"],["fu","Veille"],["cv","Castor Vinci"]];
+function tabOf(e){if(e.dataset.tab)return e.dataset.tab;var h=e.querySelector("h2"),t=(h?h.textContent:"").toLowerCase(),r="pf";
+ if(e.id=="pr"||!h)r="db";else if(/courbe|objectif|alerte/.test(t))r="db";else if(/partition|carte|largir|projection|plan|performance/.test(t))r="an";else if(/acheter|id[ée]es/.test(t))r="fu";
+ e.dataset.tab=r;return r}
+function showTab(t){document.querySelectorAll("#nav button").forEach(function(x){x.className=x.dataset.t==t?"on":""});
+ document.querySelectorAll(".pf").forEach(function(e){e.style.display=tabOf(e)==t?"":"none"});
+ var m={ac:"ac",fu:"fu",an:"ex2",cv:"cv"};["ac","fu","ex2","cv"].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display=m[t]==i?"":"none"});
+ try{if(t=="db"||t=="pf"||t=="an")render();if(t=="an")renderEx();if(t=="cv")renderCv()}catch(e){showErr(e)}}
+var CVD={v:1000,t:100,p:2000,d:20,r:100,c:100};
+function renderCv(){var el=document.getElementById("cv");if(!el)return;try{var s=JSON.parse(localStorage.getItem("cv1")||"null");if(s)CVD=s}catch(e){}
+ var F=[["v","Ton versement (€)"],["t","Abondement (% du versement)"],["p","Plafond d'abondement (€)"],["d","Décote sur le prix (%)"],["r","Prix de référence de l'action (€)"],["c","Cours actuel de l'action (€)"]];
+ el.innerHTML="<h2>🏗️ Castor Vinci : simulateur</h2><p class='s'>Je ne connais pas tes règles : saisis le barème officiel Castor. Les valeurs restent dans ton navigateur.</p>"+F.map(function(f){return "<label class='br'><span class='l' style='width:230px'>"+f[1]+"</span><input type='number' step='any' data-k='"+f[0]+"' value='"+CVD[f[0]]+"' style='width:130px;background:var(--bg);color:inherit;border:1px solid #2a2e3d;border-radius:6px;padding:6px'></label>"}).join("")+"<div id='cvo' style='margin-top:10px'></div>";
+ var calc=function(){var v=CVD.v,ab=Math.min(v*CVD.t/100,CVD.p),inv=v+ab,ps=CVD.r*(1-CVD.d/100),n=ps>0?inv/ps:0,val=n*CVD.c,g=val-v;
+  document.getElementById("cvo").innerHTML="<div class='kp'><div><span class='s'>Abondement</span><b>"+fm(ab,0)+" €</b></div><div><span class='s'>Total investi</span><b>"+fm(inv,0)+" €</b></div><div><span class='s'>Titres obtenus</span><b>"+fm(n,2)+"</b></div><div><span class='s'>Prix de revient</span><b>"+fm(v/(n||1),2)+" €</b></div><div><span class='s'>Valeur au cours actuel</span><b>"+fm(val,0)+" €</b></div><div><span class='s'>Gain sur ton versement</span><b class='"+(g>=0?"up":"dn")+"'>"+fm(g,0)+" € ("+fm(g/(v||1)*100,0)+" %)</b></div></div><p class='s'>L'abondement et la décote ne suppriment pas le risque de perte si le cours baisse, et les titres sont bloqués. Vérifie les règles sur le site officiel Castor.</p>"};
+ el.querySelectorAll("input").forEach(function(i){i.oninput=function(){CVD[i.dataset.k]=+i.value||0;try{localStorage.setItem("cv1",JSON.stringify(CVD))}catch(e){}calc()}});calc()}
+document.getElementById("nav").innerHTML=TABS.map(function(t){return "<button data-t='"+t[0]+"'>"+t[1]+"</button>"}).join("");
+showTab("db");
+
+/* ===== v3 : Dashboard, Analyses, Actus de mes actifs ===== */
+function GRP(a){return a[1]=="APO"?"Private equity":a[1]=="GOLD"?"Or":a[2]=="ETF & Or"?"ETF":a[2]}
+function cum(k,N){var d=Object.keys(L).sort(),la=d[d.length-1],ix=1,h=false;if(!la)return null;d.forEach(function(x){if((new Date(la)-new Date(x))/864e5<N&&L[x][k]!=null){ix*=1+L[x][k]/100;h=true}});return h?(ix-1)*100:null}
+function sg(v){return v==null?"—":"<span class='"+(v>=0?"up":"dn")+"'>"+(v>=0?"+":"")+fm(v,1)+" %</span>"}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function mkc(id,tab,before){var e=document.getElementById(id);if(!e){e=document.createElement("div");e.id=id;e.className="card pf";e.dataset.tab=tab;var b=document.getElementById(before);b.parentNode.insertBefore(e,b)}return e}
+var PS=3,CR={"Crypto":-50,"ETF":-20,"Actions":-20,"Or":-10,"Private equity":-20};
+function v3(t){
+ var rows=A.map(function(a){return{a:a,v:val(a)}}).filter(function(x){return x.v!=null}).sort(function(x,y){return y.v-x.v}),V=0,C=0;rows.forEach(function(x){V+=x.v;C+=x.a[3]});if(!V)return;
+ var g=function(x){return(x.v/x.a[3]-1)*100},kp=function(a){return "<div><span class='s'>"+a[0]+"</span><b>"+a[1]+"</b></div>"};
+ var gr={};rows.forEach(function(x){var c=GRP(x.a);gr[c]=(gr[c]||0)+x.v});
+ if(t=="db"){var el=mkc("kp3","db","pr"),b=rows.slice().sort(function(x,y){return g(y)-g(x)}),pos=[],vig=[],n20=rows.filter(function(x){return g(x)>20}).length,m20=rows.filter(function(x){return g(x)<-20}).length,top=rows[0];
+  if(n20)pos.push(n20+" ligne(s) à plus de +20 % depuis l'achat.");if(V>C)pos.push("Le portefeuille est au-dessus du capital investi.");
+  if(m20)vig.push(m20+" ligne(s) à moins de -20 % depuis l'achat.");if(top.v/V>.2)vig.push(top.a[0]+" pèse "+fm(top.v/V*100,0)+" % du portefeuille.");if((gr.Crypto||0)/V>.3)vig.push("Crypto : "+fm(gr.Crypto/V*100,0)+" % du portefeuille.");if(V<C)vig.push("Le portefeuille est sous le capital investi.");
+  var li=function(a){return a.length?a.map(function(s){return "<div>• "+s+"</div>"}).join(""):"<div class='s'>Rien à signaler.</div>"};
+  el.innerHTML="<h2>🏠 Dashboard</h2><div class='kp' style='margin-bottom:12px'>"+kp(["Valeur totale",Math.round(V)+" €"])+kp(["Gain latent",(V>=C?"+":"")+Math.round(V-C)+" €"])+kp(["Performance",sg((V/C-1)*100)])+kp(["Investi",Math.round(C)+" €"])+kp(["Meilleure ligne",b[0].a[0]+" "+sg(g(b[0]))])+kp(["Pire ligne",b[b.length-1].a[0]+" "+sg(g(b[b.length-1]))])+"</div>"+
+   "<div class='s'>Top 5 des positions</div>"+bars(rows.slice(0,5).map(function(x){return[x.a[0],x.v]}),function(v){return Math.round(v)+" € · "+fm(v/V*100,0)+" %"})+
+   "<div class='s' style='margin-top:12px'>Résumé automatique (règles de calcul, pas d'avis)</div><div style='margin-top:4px'><b>Points positifs</b>"+li(pos)+"<b>Points de vigilance</b>"+li(vig)+"</div><p class='s'>Revenus et dividendes : pas encore de données saisies.</p>"}
+ if(t=="an"){var el2=mkc("an3","an","ex2"),cs=function(n){var s=0;rows.slice(0,n).forEach(function(x){s+=x.v});return fm(s/V*100,0)+" %"};
+  var th=[["Ligne",-1],["1 jour",0],["1 mois",1],["1 an",2],["Depuis achat",3]],pr=rows.map(function(x){return{n:x.a[0],p:[cum(x.a[1],1),cum(x.a[1],30),cum(x.a[1],365),g(x)]}}).sort(function(x,y){return(y.p[PS]==null?-1e9:y.p[PS])-(x.p[PS]==null?-1e9:x.p[PS])});
+  var bw=0,bs=0;rows.forEach(function(x){var c=cum(x.a[1],365);if(c!=null){bw+=x.v;bs+=x.v*c}});var sp=cum("SPX",365);
+  var cats=Object.keys(gr).filter(function(c){return CR[c]!=null});
+  el2.innerHTML="<h2>📊 Analyses</h2><div class='s'>Concentration</div><div class='kp' style='margin-bottom:10px'>"+kp(["3 premières lignes",cs(3)])+kp(["5 premières",cs(5)])+kp(["10 premières",cs(10)])+"</div>"+bars(Object.keys(gr).map(function(c){return[c,gr[c]]}).sort(function(x,y){return y[1]-x[1]}),function(v){return fm(v/V*100,0)+" %"})+
+   "<div class='s' style='margin:14px 0 4px'>Performance par ligne (touche une colonne pour trier)</div><div class='sc'><table style='min-width:420px'><tr>"+th.map(function(c){return "<th "+(c[1]>=0?"data-ps='"+c[1]+"' style='cursor:pointer'":"")+">"+c[0]+(c[1]==PS?" ▾":"")+"</th>"}).join("")+"</tr>"+pr.map(function(r){return "<tr><td>"+r.n+"</td>"+r.p.map(function(v){return "<td>"+sg(v)+"</td>"}).join("")+"</tr>"}).join("")+"</table></div>"+
+   "<div class='s' style='margin:14px 0 4px'>Comparaison sur 1 an (poids actuels, hors versements)</div><div class='kp'>"+kp(["Ton portefeuille",sg(bw?bs/bw:null)])+kp(["S&amp;P 500 (ton ETF)",sg(sp)])+"</div>"+
+   "<div class='s' style='margin:14px 0 4px'>Simulateur de crise (hypothétique)</div>"+cats.map(function(c){return "<label class='br'><span class='l'>"+c+"</span><input type='number' data-c='"+c+"' value='"+CR[c]+"' style='width:80px;background:var(--bg);color:inherit;border:1px solid #2a2e3d;border-radius:6px;padding:5px'> %</label>"}).join("")+"<div id='cro' style='margin-top:8px'></div>";
+  var cc=function(){var l=0;rows.forEach(function(x){l+=x.v*(CR[GRP(x.a)]||0)/100});document.getElementById("cro").innerHTML="<div class='kp'>"+kp(["Perte estimée","<span class='dn'>"+Math.round(l)+" €</span>"])+kp(["Valeur après",Math.round(V+l)+" €"])+kp(["Variation",sg(l/V*100)])+"</div><p class='s'>Scénario hypothétique : il ne prédit ni les baisses ni les corrélations futures.</p>"};
+  el2.querySelectorAll("input").forEach(function(i){i.oninput=function(){CR[i.dataset.c]=+i.value||0;cc()}});el2.querySelectorAll("[data-ps]").forEach(function(h){h.onclick=function(){PS=+h.dataset.ps;v3("an")}});cc()}}
+function nws(){var ac=document.getElementById("ac");if(!ac)return;fetch("data/news.json?"+Date.now()).then(function(r){return r.json()}).then(function(N){var e=document.getElementById("nw");if(!e){e=document.createElement("div");e.id="nw";e.className="card";ac.insertBefore(e,ac.firstChild)}
+ var hs=A.filter(function(a){return N[a[1]]&&N[a[1]].length}).sort(function(x,y){return(val(y)||0)-(val(x)||0)});
+ e.innerHTML="<h2>📰 Actualités de mes actifs</h2><p class='s'>Titres automatiques (Yahoo Finance), classés par taille de ligne. Lis l'article avant d'en tirer une conclusion.</p>"+(hs.length?hs.map(function(a){return "<div style='margin:8px 0'><b>"+esc(a[0])+"</b>"+N[a[1]].map(function(n){return "<div>• "+(/^https?:/.test(n.l)?"<a href='"+n.l+"' target='_blank' rel='noopener'>"+esc(n.t)+"</a>":esc(n.t))+" <span class='s'>"+esc(n.s||"")+" "+esc(n.d||"")+"</span></div>"}).join("")+"</div>"}).join(""):"<div class='s'>Aucun titre pour l'instant : lance le workflow après avoir remplacé fetch.py.</div>")}).catch(function(){})}
+var _st=showTab;showTab=function(t){_st(t);try{if(t=="db"||t=="an")v3(t);if(t=="ac")nws()}catch(e){showErr(e)}};
+showTab("db");
 
 </script></body></html>
