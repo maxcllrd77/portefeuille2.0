@@ -19,106 +19,54 @@ h1{font-size:20px;margin:4px 0}h2{font-size:15px;margin:0 0 8px}.s{color:var(--m
 .bars .st{width:100%;display:flex;flex-direction:column-reverse;border-radius:4px;overflow:hidden}
 .sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}td,th{padding:6px 4px;text-align:right;border-bottom:1px solid #2a2e3d}th{color:var(--mut);font-weight:500;font-size:12px}th:first-child,td:first-child{text-align:left}
 input,textarea{background:transparent;color:var(--tx);border:1px solid #444a5e;border-radius:6px;padding:4px;font-size:13px}td input{width:78px;text-align:right}
-
-:root{--grid:#2a2e3d}@media(prefers-color-scheme:light){:root{--grid:#e3e6ee}}
-@media(prefers-color-scheme:dark){body{background:radial-gradient(900px 420px at 50% -140px,#1d2b4a 0,var(--bg) 62%) no-repeat,var(--bg)}}
-h1{font-size:24px;background:linear-gradient(90deg,#6ee7a0,#4b8fe0);-webkit-background-clip:text;background-clip:text;color:transparent}
-.card{box-shadow:0 6px 22px rgba(0,0,0,.18);border:1px solid var(--grid)}
-#nav{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;margin:6px 0!important}
-.tabs button{transition:.15s}.tabs button.on{background:linear-gradient(90deg,#2f8f55,#3fa35a);box-shadow:0 2px 10px rgba(63,163,90,.4)}
-.chart{position:relative}.chart svg{display:block;max-width:100%}
-.tt{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--grid);border-radius:10px;padding:6px 9px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:none;top:8px;white-space:nowrap}
-.dn{display:flex;gap:14px;flex-wrap:wrap;align-items:center}.dn .lgd{flex:1;min-width:170px;font-size:13px}.dn .lgd div{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px solid var(--grid)}
-.dn .lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
-.bar{height:14px;border-radius:7px;background:var(--grid);overflow:hidden;margin-top:6px}.bar div{height:100%;background:linear-gradient(90deg,#3fa35a,#6ee7a0);border-radius:7px;transition:width .5s}
-select{background:var(--card);color:var(--tx);border:1px solid #444a5e;border-radius:8px;padding:5px;font-size:13px}
-.bt td,.bt th{font-size:12px}
-.sg p{margin:6px 0}
+.br{display:flex;align-items:center;gap:8px;margin:5px 0}.br .l{width:128px;font-size:12px;flex:none}.br .bw{flex:1;background:var(--bg);border-radius:6px;height:14px;overflow:hidden;white-space:nowrap}.br .bw i{height:100%}.br b{width:92px;text-align:right;font-size:12px;flex:none;font-weight:600}
+.sk{display:flex;height:22px;border-radius:11px;overflow:hidden}details summary{cursor:pointer}
+@media(max-width:520px){.br .l{width:92px}.br b{width:78px}}
 </style></head><body>
-<h1>Mon portefeuille</h1><div class="s" id="sub"></div><div class="tabs" id="nav" style="margin:10px 0"><button data-t="pf" class="on">Portefeuille</button><button data-t="ac">Actus</button><button data-t="fu">À surveiller</button><button data-t="vc">Castor Vinci</button></div>
+<h1>Mon portefeuille</h1><div class="s" id="sub"></div><div class="tabs" id="nav" style="margin:10px 0"><button data-t="pf" class="on">Portefeuille</button><button data-t="ac">Actus</button><button data-t="fu">À surveiller</button><button data-t="ex2">Explorer</button></div>
 <div class="pf card kp" id="kp" style="margin-top:10px"></div>
-<div class="pf card"><h2>📈 Ma courbe d'investissement</h2><div class="tabs" id="rg"></div><select id="sel" style="margin-bottom:8px;max-width:100%"></select><div id="ch" class="chart"></div><div class="kp" id="chk" style="margin-top:8px"></div></div>
-<div class="pf card"><h2>🎯 Mon objectif d'épargne</h2><div class="kp"><div><span class="s">Objectif (€)</span><br><input id="ob" value="5000" style="width:90px"></div><div id="obt" style="flex:3"></div></div></div>
-<div class="pf card"><h2>🥧 Répartition</h2><div class="tabs" id="dm"></div><div id="dn" class="dn"></div></div>
-<div class="pf card"><h2>🌱 Élargir mon investissement</h2><p class="s">Des pistes à explorer, pas des conseils personnalisés.</p><div class="sc"><table id="zt"></table></div><div id="sg"></div></div>
-<div class="pf card"><h2>Carte thermique</h2><div class="tabs" id="tabs"></div><div id="map"></div><div class="s" id="note" style="margin-top:6px"></div></div>
+<div class="pf card"><h2>Carte thermique</h2><div class="tabs" id="modes"></div><div class="tabs" id="tabs"></div><div id="map"></div><div class="s" id="note" style="margin-top:6px"></div><div id="dr"></div></div>
 <div class="pf card"><h2>Répartition</h2><div class="al" id="al"></div><div class="lg" id="lg"></div></div>
 <div class="pf card"><h2>Positions</h2><div class="sc"><table id="tb"></table></div></div>
 <div class="pf card"><h2>Versements par mois (achats)</h2><div class="bars" id="bars"></div><div class="lg" id="lg2" style="margin-top:8px"></div></div>
 <div class="pf card"><h2>⚠️ Alertes risque</h2><div id="risk"></div></div>
-<div class="pf card"><h2>🎯 Quoi acheter ce mois-ci ?</h2><div class="tabs" id="rt"><button class="on" data-r="p">Mon plan</button><button data-r="i">Idées du moment</button></div>
-<div id="rp"><p class="s" id="rh"></p><div class="kp"><div><span class="s">Versement €</span><br><input id="rm" value="100" style="width:70px"></div><div><span class="s">Objectif Crypto %</span><br><input id="t1" value="20" style="width:60px"></div><div><span class="s">ETF &amp; Or %</span><br><input id="t2" value="50" style="width:60px"></div><div><span class="s">Actions %</span><br><input id="t3" value="30" style="width:60px"></div></div><div class="sc"><table id="rb"></table></div><div id="rl" style="margin-top:6px"></div></div>
-<div id="idees" style="display:none"><p class="s">Les points positifs que je vois en ce moment (24/11). Ce ne sont pas des recommandations d'achat : à chaque fois, il y a aussi un point d'attention. À relire début décembre.</p>
-<p><b>🏗️ Castor Vinci</b> (si tu es éligible)<br>✅ 200 % d'abondement sur les 500 premiers euros versés, soit 1 000 € offerts pour 500 € : un avantage que ni la bourse ni les cryptos n'offrent.<br>⚠️ Argent bloqué plusieurs années. La souscription se termine le 15/12. Voir l'onglet Castor.</p>
-<p><b>₿ Cryptos</b><br>✅ Indice Peur &amp; Avarice à 11 (peur extrême) : après de telles peurs, les prix ont déjà rebondi par le passé, sans garantie. Le Bitcoin a perdu environ 20 % en novembre.<br>⚠️ Les ETF Bitcoin US continuent de voir sortir de l'argent et il n'y a pas d'achat soutenu pour l'instant.</p>
-<p><b>📈 S&amp;P 500 et marchés US</b><br>✅ Après la pire semaine en 19 mois (-8,6 %), les fonds automatiques sont vendeurs nets : s'ils rachètent, le rebond peut être fort.<br>⚠️ Les taux US (10 ans à 4,94 %) et le risque de nouvelles hausses de la Fed restent le principal danger.</p>
-<p><b>✈️ Safran</b><br>✅ Environ -24 % sous son sommet d'août. Bernstein juge les bénéfices 2026 sécurisés. Ventes en hausse de 13 % au T3.<br>⚠️ Objectifs seulement confirmés, investissements plus lourds. Prochaine info clé : 09/02/2027.</p>
-<p><b>🥇 Or</b><br>✅ Il recule alors qu'il sert de protection à long terme. Un dollar moins fort l'aiderait.<br>⚠️ Il n'a pas protégé ton portefeuille cette semaine.</p>
-<p><b>🌍 Ton plan régulier</b><br>✅ Acheter un peu chaque mois, sans chercher le meilleur jour, lisse les à-coups comme ceux de cette semaine.<br>⚠️ Ton portefeuille est déjà lourd en crypto : regarde l'onglet « Élargir mon investissement ».</p>
-</div></div>
-<div class="pf card"><h2>📈 Projection (DCA)</h2><p class="s" id="ph"></p><div class="kp"><div><span class="s">Versement / mois €</span><br><input id="pm" value="100" style="width:70px"></div><div><span class="s">Années</span><br><input id="py" value="10" style="width:60px"></div></div><div class="sc"><table id="pj"></table></div><p class="s">Hypothèses de rendement par type d'actif, pas des prévisions.</p></div>
+<div class="pf card"><h2>🎯 Quoi acheter ce mois-ci ?</h2><p class="s">Compare ta répartition à tes objectifs et répartit ton versement.</p><div class="kp"><div><span class="s">Versement €</span><br><input id="rm" value="100" style="width:70px"></div><div><span class="s">Objectif Crypto %</span><br><input id="t1" value="20" style="width:60px"></div><div><span class="s">ETF &amp; Or %</span><br><input id="t2" value="50" style="width:60px"></div><div><span class="s">Actions %</span><br><input id="t3" value="30" style="width:60px"></div></div><div class="sc"><table id="rb"></table></div></div>
+<div class="pf card"><h2>📈 Projection (DCA)</h2><div class="kp"><div><span class="s">Versement / mois €</span><br><input id="pm" value="100" style="width:70px"></div><div><span class="s">Années</span><br><input id="py" value="10" style="width:60px"></div></div><div class="sc"><table id="pj"></table></div><p class="s">Hypothèses de rendement, pas des prévisions.</p></div>
 <div class="pf card"><h2>💸 Frais &amp; revenus (depuis le début)</h2><div class="kp"><div><span class="s">Frais payés</span><b class="dn">57,70 €</b></div><div><span class="s">Taxes</span><b class="dn">4,59 €</b></div><div><span class="s">Dividendes + intérêts</span><b class="up">10,65 €</b></div></div></div>
 <div class="pf card"><button class="btn" id="ex">⬇️ Exporter mes positions (CSV)</button></div>
 <div class="pf card"><h2>📥 Importer mon CSV Trade Republic</h2><p class="s">Exportation_de_transactions.csv : le site recalcule positions, prix moyens et versements. À refaire quand tu veux mettre à jour (tes valeurs saisies sont gardées).</p><input type="file" id="csvf" accept=".csv,text/csv"><div class="s" id="csvm" style="margin-top:6px"></div></div>
 <div class="pf card"><h2>Journal des cours</h2><p class="s">Colle le JSON du script Colab (perf du jour par actif) pour alimenter 1 jour, 3 jours, lundi→lundi et 1 mois.</p><textarea id="imp" rows="3" style="width:100%"></textarea><br><button class="btn" id="impb" style="margin-top:6px">Importer</button></div>
-<div id="ac" style="display:none"><div class="card"><h2>📰 Mardi 24/11, matin</h2><p class="s">D'après Reuters, Boursorama, Les Affaires, Investing.com et KuCoin. Pas un conseil.</p>
-<p><b>Hier (lundi), gros rebond.</b> Nvidia a gagné environ 30 % après le retour de Jensen Huang. Le Nasdaq a pris environ 6,5 % et le S&amp;P 500 environ 4,7 %.</p>
-<p><b>Mais ça vient après une semaine noire :</b> le S&amp;P 500 a perdu 8,6 % la semaine dernière, sa pire semaine en 19 mois. Les fonds automatiques (CTA) ont vendu environ 57 Md$ d'actions en un mois et sont vendeurs nets aux US : un rebond peut donc être violent dans les deux sens.</p>
-<p><b>Crypto :</b> le Bitcoin a touché 64 500 $ lundi avant de retomber vers 61 000 $. L'indice Peur &amp; Avarice est à 11, « peur extrême ». Les cryptos n'ont pas suivi le rebond des actions.</p>
-<p><b>Aujourd'hui :</b> discours de John Williams (Fed de New York). Les marchés cherchent des indices sur les taux.</p></div>
-<div class="card"><h2>🟢 Nvidia : pas grâce aux résultats</h2><p>Résultats du 17/11 : 115,8 Md$ de chiffre d'affaires (+103 % sur un an), et le titre avait pourtant chuté de 14 % vendredi. Le rebond du 23/11 vient du retour du patron. L'enquête indépendante continue.</p></div>
-<div class="card"><h2>💥 Pourquoi tout avait chuté vendredi 20/11</h2>
-<p>• <b>Doute sur l'IA</b> : début décevant de l'IPO d'Anthropic, dettes énormes du secteur, crise chez Nvidia.<br>• <b>Peur de nouvelles hausses de taux de la Fed</b> : inflation forte aux US, dollar fort.<br>• <b>Besoin de cash</b> : quand actions, or et Bitcoin baissent ensemble, ce sont souvent des ventes forcées.</p></div>
-<div class="card"><h2>₿ Crypto</h2><p>Le Bitcoin a perdu environ 20 % en novembre. Les ETF Bitcoin US ont vu environ 2,9 Md$ sortir. Zone surveillée par les analystes : 58 000 – 62 000 $. Les altcoins (ETH, XRP, SOL, Render, HBAR) bougent plus fort que le BTC, dans les deux sens. Aujourd'hui, des déblocages de jetons (MON, SOSO) peuvent peser sur ces petites cryptos.</p></div>
-<div class="card"><h2>✈️ Safran</h2><p>Le 23/10, l'action a perdu environ 9 % alors que les ventes du T3 étaient en hausse de 13 %. Raisons citées : objectifs 2026 seulement confirmés et investissements plus lourds pour suivre Airbus et Boeing. Bernstein juge les bénéfices 2026 sécurisés. Prochain rendez-vous : résultats annuels le 09/02/2027.</p></div>
-<div class="card"><h2>🥇 Or</h2><p>L'or recule depuis son pic de début 2026. Il ne joue pas son rôle de refuge en ce moment : dollar fort, taux élevés et ventes forcées.</p></div>
-<div class="card"><h2>🗣️ Ce qui circule (rumeurs, attentes, opinions)</h2>
-<p>• <b>Attente de marché</b> : nouvelles hausses de taux de la Fed. Pas décidé, mais déjà dans les prix.<br>• <b>Opinion d'analystes</b> : « le marché baissier du Bitcoin est fini ». Jugé prématuré par plusieurs autres.<br>• <b>Opinion</b> : « le Bitcoin n'est plus de l'or numérique mais un baromètre de la Fed » (Les Affaires).<br>• <b>Positionnement</b> : les fonds automatiques sont vendeurs nets d'actions US. Si le marché remonte, ils peuvent racheter vite.<br>• <b>Anthropic</b> : l'IPO a démarré faiblement et pèse sur le sentiment IA.<br>• <b>Non vérifié</b> : « Alten quitte Safran ». Je n'ai trouvé aucune source.</p>
-<p class="s">Je n'ai trouvé aucune rumeur confirmée visant directement tes lignes. Sources : Reuters, Boursorama, Les Affaires, KuCoin, Investing.com. Les chiffres varient d'une source à l'autre.</p></div>
-</div>
-<div id="fu" style="display:none"><div class="card"><h2>🔭 À surveiller</h2><p class="s">Personne ne peut dire quelle entreprise va monter dans les prochains jours, moi non plus. Voici ce qui peut faire bouger tes actifs : à toi de te renseigner.</p></div>
-<div class="card"><h2>📅 Cette semaine et après</h2><p>• <b>Mar 24/11</b> : discours de John Williams (Fed de New York).<br>• <b>Mer 25/11, 14h30</b> : inflation PCE US, le chiffre préféré de la Fed.<br>• <b>Jeu 26/11</b> : Thanksgiving, marchés US fermés.<br>• <b>15/12</b> : fin de la période de souscription Castor Vinci.<br>• <b>Début décembre</b> : réunion de la Fed (dates à confirmer).</p></div>
-<div class="card"><h2>⚡ Résultats de la semaine : ce que le cours a fait</h2><p class="s">Je ne mets que des chiffres trouvés. « n/d » = pas encore trouvé. Dis-moi « mets à jour » pour compléter.</p>
-<div class="sc"><table class="bt"><tr><th>Entreprise</th><th>Résultats</th><th>Ce que le cours a fait</th></tr>
-<tr><td>Zoom</td><td>Lun 23, après clôture</td><td><b>Séance : +5,87 %</b> (avant résultats). <b>Après résultats : -1,17 %</b> (hors séance). BPA 1,59 $ vs 1,49 attendu, prévisions relevées, 1er dividende.</td></tr>
-<tr><td>HPE</td><td>Lun 23, après clôture</td><td>Recule après clôture malgré des résultats et des prévisions meilleurs que prévu. Ampleur : n/d.</td></tr>
-<tr><td>Agilent</td><td>Lun 23, après clôture</td><td>n/d</td></tr>
-<tr><td>Jacobs</td><td>Lun 23, après clôture</td><td>n/d</td></tr>
-<tr><td>Valneva</td><td>Lun 23 (France)</td><td>n/d</td></tr>
-<tr><td>Trigano</td><td>Lun 23 (France)</td><td>n/d</td></tr>
-<tr><td>Medtronic</td><td>Mar 24, avant ouverture</td><td>n/d (séance en cours)</td></tr>
-<tr><td>Analog Devices</td><td>Mar 24, avant ouverture</td><td>n/d (séance en cours)</td></tr>
-<tr><td>Best Buy</td><td>Mar 24, avant ouverture</td><td>n/d (séance en cours)</td></tr>
-<tr><td>Dollar Tree</td><td>Mar 24, avant ouverture</td><td>n/d (séance en cours)</td></tr>
-<tr><td>Dell</td><td>Mar 24, après clôture</td><td>À venir</td></tr>
-<tr><td>Workday</td><td>Mar 24, après clôture</td><td>À venir</td></tr>
-<tr><td>HP</td><td>Mar 24, après clôture</td><td>À venir</td></tr>
-<tr><td>Autodesk</td><td>Mar 24, après clôture</td><td>À venir</td></tr>
-<tr><td>Deere</td><td>Mer 25, avant ouverture</td><td>À venir</td></tr></table></div>
-<p class="s">Exemple Zoom : de bons résultats, et le cours ne monte pas pour autant, car une partie de la bonne nouvelle était déjà dans le prix (+5,9 % la veille).</p></div>
-<div class="card"><h2>📌 Ça bouge, mais pas à cause des résultats</h2>
-<p>• <b>Nvidia +30 % (23/11)</b> : retour du patron, alors que ses résultats du 17/11 étaient excellents.<br>• <b>S&amp;P 500 -3,7 % (20/11)</b> et -8,6 % sur la semaine : taux et doute sur l'IA.<br>• <b>Bitcoin sous 60 000 $ (20/11)</b> : sorties des ETF et ventes forcées.<br>• <b>Safran -9 % (23/10)</b> : résultats, mais ce sont les objectifs et les investissements qui ont déçu, pas les ventes.</p>
-<p class="s">À retenir : une action bouge aussi pour la gouvernance, les taux, la régulation, les flux des ETF et les rumeurs.</p></div>
-<div class="card"><h2>🚨 Signaux de risque</h2><p class="s">Une rumeur seule n'est pas une raison de vendre : cherche toujours une source officielle.</p>
-<p>• ✅ <b>Confirmé</b> : Nvidia, dirigeant parti puis revenu. L'enquête indépendante continue, avec un risque de régulation (SEC).<br>• ⚠️ <b>Attente</b> : nouvelles hausses de taux de la Fed. Les actions et cryptos souffrent souvent quand les taux montent fort (tendance, pas une règle).<br>• ⚠️ <b>Positionnement</b> : les fonds automatiques sont vendeurs nets d'actions US, ce qui peut amplifier un rebond comme une chute.<br>• ⚠️ <b>Crypto</b> : peur extrême (indice à 11), sorties des ETF, déblocages de jetons.<br>• ❓ <b>Non vérifié</b> : « Alten quitte Safran », aucune source trouvée.</p>
-<p><b>Les alertes à prendre au sérieux :</b></p>
-<p>1. Une annonce officielle (communiqué, AMF, SEC), pas juste les réseaux.<br>2. Un avertissement sur les résultats de l'entreprise.<br>3. Un départ de dirigeant ou une enquête.<br>4. Taux et dollar qui montent ensemble.<br>5. Tout qui baisse en même temps (actions, or, crypto).<br>6. Des sorties massives des ETF crypto.</p>
-<p class="s">Exemple de la semaine : Nvidia a clôturé vendredi à 125,53 $ (-14 %), puis a gagné environ 30 % lundi. Vendre sur la panique aurait fait rater le rebond, mais personne ne pouvait le savoir. C'est pour ça qu'on fixe ses règles à l'avance.</p></div>
-<div class="card"><h2>🧭 Pour te renseigner</h2><p>Regarde la date des résultats avant d'acheter, les avis d'analystes (et leurs raisons), et si la hausse vient d'une vraie nouvelle ou d'une rumeur.</p></div>
-</div>
-<div id="vc" style="display:none">
-<div class="card"><h2>🏗️ Castor Vinci : simulateur</h2><p class="s">Règles 2026 du fonds Castor Relais (castor.vinci.com). Mets ta somme, je calcule l'abondement.</p>
-<div class="kp"><div><span class="s">Je verse (€)</span><br><input id="k1" value="500" style="width:80px"></div><div><span class="s">Déjà versé en 2026 (€)</span><br><input id="k6" value="0" style="width:80px"></div><div><span class="s">Prix de souscription (€)</span><br><input id="k2" value="119.33" style="width:80px"></div><div><span class="s">Cours Vinci actuel (€)</span><br><input id="k3" value="111.00" style="width:80px"></div><div><span class="s">Évolution du cours à 5 ans (%)</span><br><input id="k4" value="0" style="width:80px"></div><div><span class="s">Salaire annuel brut (€, option)</span><br><input id="k5" value="" style="width:80px"></div></div>
-<div class="sc" style="margin-top:8px"><table id="kt"></table></div><p class="s" id="kw"></p></div>
-<div class="card"><h2>📋 Les règles (2026)</h2><p>• <b>Abondement</b> : 200 % sur les 500 premiers €, 100 % de 501 à 2 000 €, 50 % de 2 001 à 4 000 €. Maximum 3 500 € bruts par an.<br>• <b>Décote</b> : 5 % sur le prix de référence de l'action.<br>• <b>Période en cours</b> : du 01/09 au 15/12/2026, prix de souscription 119,33 €.<br>• <b>Ancienneté</b> : 3 mois dans le Groupe pour verser.<br>• <b>Blocage</b> : en général plusieurs années (souvent 5 ans), avec des cas de déblocage anticipé. À vérifier dans ton livret.</p>
-<p><b>Point d'attention :</b> le prix de souscription (119,33 €) est supérieur au cours actuel (111,00 €, le 22/11). La décote de 5 % se calcule sur une moyenne passée, pas sur le cours du jour. Le simulateur en tient compte.</p>
-<p class="s">Non pris en compte : prélèvements sociaux possibles sur l'abondement, frais éventuels, ton plafond personnel de versement (en général 25 % du salaire annuel brut). Mets ton salaire pour avoir l'alerte. Sources : castor.vinci.com. Ce que je ne vois pas : ton ancienneté, ton éligibilité exacte et ce que tu as déjà versé. Donne-les-moi et je les intègre.</p></div></div>
+<div id="pr" class="card pf"></div>
+<div id="ex2" style="display:none"></div>
+<div id="ac" style="display:none">
+<div class="card"><h2>📰 Ce qui se passe</h2><p class="s">Résumé du 23/11/2026, d'après la presse financière. Pas un conseil.</p>
+<p><b>Vendredi 20/11 : forte baisse partout.</b> Actions US, CAC 40 (sous 8 000), Bitcoin (sous 60 000 $ pour la 1re fois depuis 140 jours) et même l'or ont baissé ensemble. Nasdaq : environ -4 à -5 % selon les sources.</p>
+<p><b>Pourquoi, en simple :</b></p>
+<p>• <b>Doute sur l'IA</b> : l'entrée en bourse d'Anthropic a vite faibli et le marché s'inquiète des dettes énormes du secteur. Nvidia est aussi dans la tourmente depuis le départ de son patron.</p>
+<p>• <b>Peur d'une hausse des taux de la Fed</b> : l'inflation reste forte aux US, donc la Fed pourrait monter ses taux en décembre. Avec le dollar fort, ça pèse sur les actions tech, les cryptos et l'or.</p>
+<p>• <b>Besoin de cash</b> : quand tout baisse en même temps, y compris l'or, c'est que des investisseurs vendent ce qu'ils peuvent pour couvrir leurs pertes.</p></div>
+<div class="card"><h2>₿ Crypto</h2><p>Le Bitcoin suit de plus en plus les actions tech. Les ETF Bitcoin US ont vu environ 2,9 Md$ sortir en novembre et les mineurs vendent. Les analystes surveillent la zone 58 000 – 62 000 $ : si elle cède, ils parlent de tests plus bas. Les altcoins (ETH, XRP, SOL, Render, HBAR) baissent plus fort que le BTC les mauvais jours, c'est ce qu'on voit dans ton journal.</p></div>
+<div class="card"><h2>✈️ Safran</h2><p>Le 23/10, l'action a perdu environ 9 % alors que les ventes du T3 étaient en hausse de 13 %. Raisons citées : objectifs 2026 seulement confirmés (pas relevés) et investissements plus lourds pour suivre les cadences d'Airbus et Boeing. Bernstein juge les bénéfices 2026 sécurisés. Le titre est à environ -24 % de son sommet d'août (363,60 €). Prochain rendez-vous : résultats annuels le 09/02/2027.</p></div>
+<div class="card"><h2>🥇 Or</h2><p>L'or recule depuis son pic de début 2026 (environ -35 % d'après une source). Il ne joue pas son rôle de refuge en ce moment : dollar fort, taux élevés et ventes forcées.</p></div>
+<div class="card"><h2>🗣️ Rumeurs et anticipations (à vérifier)</h2><p>• <i>Hausse des taux Fed en décembre</i> : anticipation du marché, rien n'est décidé.<br>• <i>« Le marché baissier du Bitcoin est fini »</i> : jugé prématuré par plusieurs analystes.<br>• <i>Tensions au détroit d'Ormuz</i> : peur d'une 2e vague d'inflation via l'énergie.<br>• <i>Départ de Jensen Huang chez Nvidia</i> : confirmé par la presse, avec un scandale rapporté autour de lui.</p><p class="s">Sources : invesse.fr, kucoin.com, okx.com, cryptonomist.ch, abcbourse.com, tradingsat.com, boursorama.com. Les chiffres varient d'une source à l'autre.</p></div></div>
+<div id="fu" style="display:none">
+<div class="card"><h2>🔭 À surveiller</h2><p class="s">Personne ne peut dire quelle entreprise va monter dans les prochains jours, moi non plus. Voici ce qui peut faire bouger tes actifs : à toi de te renseigner.</p></div>
+<div class="card"><h2>📅 Cette semaine et après</h2><p>• <b>Lun 23/11</b> : indices PMI flash (France, Allemagne) et confiance des consommateurs US.<br>• <b>Mer 25/11, 14h30</b> : inflation PCE US, le chiffre préféré de la Fed. Il peut faire bouger les anticipations de taux, donc tout le portefeuille.<br>• <b>Jeu 26/11</b> : Thanksgiving, marchés US fermés.<br>• <b>Début décembre</b> : réunion de la Fed (dates exactes à confirmer). Le marché parie sur une hausse.</p></div>
+<div class="card"><h2>🎯 Par actif</h2><p>• <b>Bitcoin et cryptos</b> : le BTC tient-il 58 000 – 62 000 $ ? Les flux des ETF redeviennent-ils positifs ?<br>• <b>Safran</b> : prochaine info clé le 09/02/2027. Entre-temps, il suit surtout la bourse et les cadences Airbus/Boeing.<br>• <b>S&P 500, Stoxx 600, MSCI EM</b> : dépendent de l'IA US, de la Fed et du dollar.<br>• <b>Or</b> : dépend du dollar et des taux réels. Un recul du dollar l'aiderait.<br>• <b>SpaceX</b> : introduit en bourse le 12/06, titre très volatil.</p></div>
+<div class="card"><h2>⚡ Valeurs qui peuvent bouger fort cette semaine</h2><p class="s">Le jour des résultats, un titre peut faire +10 % ou -10 %. Personne ne sait dans quel sens : c'est un jour à risque, pas une promesse de hausse.</p><p>• <b>Lun 23 (après clôture)</b> : Zoom, HPE, Agilent, Jacobs. En France : Valneva, Trigano.<br>• <b>Mar 24 (avant ouverture)</b> : Medtronic, Analog Devices, Best Buy, Dollar Tree.<br>• <b>Mar 24 (après clôture)</b> : Dell, Workday, HP, Autodesk.<br>• <b>Mer 25</b> : Deere (avant ouverture).</p><p class="s">Les petites valeurs qui « explosent » sur une rumeur ou sur les réseaux sont souvent les premières à s'effondrer après. Ne mets que ce que tu peux perdre, et vérifie d'où vient la hausse.</p></div>
+<div class="card"><h2>🧭 Pour te renseigner</h2><p>Regarde la date des résultats d'une entreprise avant d'acheter, les avis d'analystes (et leurs raisons), et si la hausse vient d'une vraie nouvelle ou d'une rumeur. Un titre qui monte vite sur une rumeur peut redescendre aussi vite.</p></div></div>
 <script>
+function showErr(e){var b=document.getElementById("errb");if(!b){b=document.createElement("div");b.id="errb";b.style.cssText="background:#7a2a2a;color:#fff;padding:8px 10px;border-radius:8px;margin:8px 0;font-size:12px";document.body.insertBefore(b,document.body.firstChild)}b.textContent="Erreur sur la page : "+(e&&e.message||e)}
+window.addEventListener("error",function(ev){showErr(ev.error||ev.message)});
+function showTab(t){document.querySelectorAll("#nav button").forEach(function(x){x.className=x.dataset.t==t?"on":""});document.querySelectorAll(".pf").forEach(function(e){e.style.display=t=="pf"?"":"none"});["ac","fu","ex2"].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display=t==i?"":"none"});try{if(t=="pf")render();if(t=="ex2")renderEx()}catch(e){showErr(e)}}
+document.getElementById("nav").addEventListener("click",function(ev){var b=ev.target&&ev.target.closest?ev.target.closest("button"):null;if(b&&b.dataset.t)showTab(b.dataset.t)});
 var A=[["Air Liquide", "AI", "Actions", 5.0, 0.02827, null], ["Alibaba Group", "BABA", "Actions", 79.99, 4.658087, null], ["Apple", "AAPL", "Actions", 5.0, 0.024715, null], ["Avenir Telecom", "ATEL", "Actions", 10.79, 73.055555, null], ["Bitcoin", "BTC", "Crypto", 481.43, 0.006906, 385.05], ["Core S&P 500", "SPX", "ETF & Or", 400.0, 0.584314, 408.52], ["Core Stoxx Europe 600", "SXXP", "ETF & Or", 280.0, 0.906735, 282.77], ["Ethereum", "ETH", "Crypto", 138.0, 0.065528, 102.58], ["Fluence Energy", "FLNC", "Actions", 15.0, 0.824175, null], ["Hedera", "HBAR", "Crypto", 70.0, 888.647144, 41.59], ["LVMH Moët Hennessy", "LVMH", "Actions", 10.0, 0.015817, null], ["MSCI Africa Top 50", "AFR", "ETF & Or", 84.99, 8.590099, 72.76], ["MSCI Emerging Markets", "EM", "ETF & Or", 315.0, 43.958392, 297.16], ["Physical Gold", "GOLD", "ETF & Or", 176.0, 1.19912, 156.68], ["Render", "RNDR", "Crypto", 132.97, 86.895327, 103.66], ["Safran", "SAF", "Actions", 539.0, 1.722034, 515.4], ["Solana", "SOL", "Crypto", 60.0, 0.708629, 46.59], ["SpaceX", "SPCX", "Actions", 135.02, 1.097469, 132.75], ["Uranium", "URA", "ETF & Or", 45.0, 1.569853, null], ["XRP", "XRP", "Crypto", 106.0, 80.844158, 68.95], ["Private Equity (Apollo)", "APO", "Actions", 284.0, 1.75, 289.69]],M={"2025-09": {"Actions": 31.0, "Crypto": 4.93}, "2025-10": {"Actions": -0.0}, "2025-12": {"Actions": 18.0, "Crypto": 61.92}, "2026-01": {"Actions": 80.78, "Crypto": 48.97, "ETF & Or": 20.0}, "2026-02": {"Actions": 369.0, "Crypto": 59.93, "ETF & Or": 199.99}, "2026-03": {"Actions": 15.0, "Crypto": 69.96, "ETF & Or": 291.0}, "2026-04": {"Actions": 165.0, "Crypto": 34.96, "ETF & Or": 55.0}, "2026-05": {"Actions": 30.0, "Crypto": 74.95, "ETF & Or": 140.0}, "2026-06": {"Actions": 170.02, "Crypto": 109.96, "ETF & Or": 130.0}, "2026-07": {"Actions": -0.0}, "2026-08": {"Actions": -0.0, "Crypto": 113.0}, "2026-09": {"Actions": 15.0, "Crypto": 74.95, "ETF & Or": 145.0}, "2026-10": {"Actions": 30.0, "Crypto": 229.89, "ETF & Or": 120.0}, "2026-11": {"Actions": 20.0, "Crypto": 104.98, "ETF & Or": 200.0}};
-var T=[["Depuis l'achat",0],["1 jour",1],["3 jours",3],["Lundi → lundi",7],["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]],CL={"Crypto":"var(--c1)","ETF & Or":"var(--c2)","Actions":"var(--c3)"},cur=0;
+var T=[["Depuis l'achat",0],["1 jour",1],["3 jours",3],["Lundi → lundi",7],["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]],CL={"Crypto":"var(--c1)","ETF & Or":"var(--c2)","Actions":"var(--c3)"},cur=0,mode=0;
 var L={},O={};try{L=JSON.parse(localStorage.getItem("pf4")||"{}");O=JSON.parse(localStorage.getItem("pf5")||"{}")}catch(e){}
-var PX={},ANC="";function pxAt(k,d){var s=ps(k);if(!s)return null;var r=null;for(var i=0;i<s.length;i++){if(s[i][0]<=d)r=s[i][1];else break}return r}
-function val(a){var k=a[1];if(O[k]!=null)return O[k];if(PX[k]!=null){if(a[5]!=null&&ANC){var p0=pxAt(k,ANC);if(p0)return Math.round(a[5]*PX[k]/p0*100)/100}if(a[5]==null)return Math.round(PX[k]*a[4]*100)/100}return a[5]}
+var PX={},SUS={};function val(a){var k=a[1];if(O[k]!=null)return O[k];var p=PX[k];if(p==null)return a[5];var v=Math.round(p*a[4]*100)/100;
+ if(a[5]!=null&&(v>a[5]*1.5||v<a[5]/1.5)){SUS[k]=1;return a[5]}
+ if(a[5]==null&&p/(a[3]/a[4])>4){SUS[k]=1;return null}
+ return v}
 function per(k,N){var ds=Object.keys(L).sort().filter(function(d){return L[d][k]!=null});if(!ds.length)return null;var ref=new Date(ds[ds.length-1]),p=1,n=0;ds.forEach(function(d){if((ref-new Date(d))/864e5<N&&L[d][k]!=null){p*=1+L[d][k]/100;n++}});return n?(p-1)*100:null}
 function pc(a){var v=val(a);if(cur==0)return v==null?null:(v/a[3]-1)*100;return per(a[1],T[cur][1])}
 function col(p){if(p===null)return"#3a3f50";var a=Math.min(Math.abs(p)/(T[cur][1]==0||T[cur][1]>=30?20:4),1);return p>=0?"rgb("+Math.round(35-10*a)+","+Math.round(95+55*a)+",55)":"rgb("+Math.round(110+60*a)+","+Math.round(60-20*a)+","+Math.round(60-20*a)+")"}
@@ -129,15 +77,23 @@ function sq(items,x,y,w,h,out){if(!items.length)return;if(items.length==1){out.p
  var rest=items.slice(row.length);if(hz)sq(rest,x+len,y,w-len,h,out);else sq(rest,x,y+len,w,h-len,out)}
 function f(x,d){return(x>=0?"+":"")+x.toFixed(d==null?2:d)}
 function render(){
+ SUS={};
  var V=0,C=0,CK=0;A.forEach(function(a){var v=val(a);if(v!=null){V+=v;CK+=a[3]}C+=a[3]});var G=V-CK;
  document.getElementById("sub").textContent=A.length+" positions · investi "+C.toFixed(0)+" € (hors cours manquants)";
  document.getElementById("kp").innerHTML="<div><span class='s'>Valeur</span><b>"+V.toFixed(0)+" €</b></div><div><span class='s'>Investi</span><b>"+CK.toFixed(0)+" €</b></div><div><span class='s'>Gain / perte</span><b class='"+(G>=0?"up":"dn")+"'>"+f(G,0)+" € ("+f(G/CK*100,1)+" %)</b></div>";
+ var md=document.getElementById("modes");md.innerHTML="";["Par actif","Par catégorie"].forEach(function(t,i){var b=document.createElement("button");b.textContent=t;if(i==mode)b.className="on";b.onclick=function(){mode=i;render()};md.appendChild(b)});
  var tb=document.getElementById("tabs");tb.innerHTML="";T.forEach(function(t,i){var b=document.createElement("button");b.textContent=t[0];if(i==cur)b.className="on";b.onclick=function(){cur=i;render()};tb.appendChild(b)});
  var it=A.filter(function(a){return val(a)!=null}).map(function(a){return{k:a[1],n:a[0],v:val(a),p:pc(a)}}).sort(function(a,b){return b.v-a.v});
- var m=document.getElementById("map"),out=[];m.innerHTML="";sq(it,0,0,m.clientWidth,m.clientHeight,out);
- out.forEach(function(o){var r=o[0],e=document.createElement("div");e.className="c";e.style.cssText="left:"+o[1]+"px;top:"+o[2]+"px;width:"+o[3]+"px;height:"+o[4]+"px;background:"+col(r.p);e.innerHTML="<b>"+r.k+"</b>"+(o[3]>95&&o[4]>52?r.n+"<br>":"")+"<i>"+(r.p===null?"—":f(r.p)+" %")+"</i>";m.appendChild(e)});
+ var mi=it.filter(function(x){return x.v/V>=0.015}),sm=it.filter(function(x){return x.v/V<0.015});
+ if(sm.length>=2){var sv=0,sc=0,wp=0,wn=0;sm.forEach(function(x){var q=A.filter(function(a){return a[1]==x.k})[0];sv+=x.v;sc+=q[3];if(x.p!==null){wp+=x.p*x.v;wn+=x.v}});mi.push({k:"Autres",n:sm.map(function(x){return x.k}).join(", "),mem:sm.map(function(x){return x.k}),v:sv,p:cur==0?(sv/sc-1)*100:(wn?wp/wn:null)});mi.sort(function(a,b){return b.v-a.v})}else mi=it;
+ if(mode==1){var GR=function(a){return a[1]=="APO"?"Private equity":a[1]=="GOLD"?"Or":a[2]=="ETF & Or"?"ETF":a[2]},g={};
+  it.forEach(function(x){var a=A.filter(function(q){return q[1]==x.k})[0],c=GR(a);g[c]=g[c]||{v:0,c:0,wp:0,wn:0,m:[]};g[c].m.push(x.k);g[c].v+=x.v;g[c].c+=a[3];if(x.p!==null){g[c].wp+=x.p*x.v;g[c].wn+=x.v}});
+  mi=Object.keys(g).map(function(c){var o=g[c];return{k:c,n:Math.round(o.v/V*100)+" % du total · "+Math.round(o.v)+" €",mem:o.m,v:o.v,p:cur==0?(o.v/o.c-1)*100:(o.wn?o.wp/o.wn:null)}}).sort(function(a,b){return b.v-a.v})}
+ var m=document.getElementById("map"),out=[];m.innerHTML="";sq(mi,0,0,m.clientWidth,m.clientHeight,out);
+ out.forEach(function(o){var r=o[0],e=document.createElement("div");e.className="c";e.title=r.n+" : "+(r.p===null?"—":f(r.p)+" %");e.style.cssText="left:"+o[1]+"px;top:"+o[2]+"px;width:"+o[3]+"px;height:"+o[4]+"px;background:"+col(r.p);e.innerHTML="<b>"+r.k+"</b>"+(o[3]>95&&o[4]>52?r.n+"<br>":"")+"<i>"+(r.p===null?"—":f(r.p)+" %")+"</i>";e.style.cursor="pointer";e.onclick=function(){drill={t:r.k,mem:r.mem||[r.k]};renderDr()};if(drill&&drill.t==r.k)e.style.outline="2px solid #fff";m.appendChild(e)});
  var nd=A.filter(function(a){return cur>0&&pc(a)===null&&val(a)!=null}).length,nv=A.filter(function(a){return val(a)==null}).length;
- document.getElementById("note").textContent=(nd?nd+" actifs sans cours pour cette période (gris). ":"")+(nv?nv+" actifs sans valeur actuelle : renseigne-la dans le tableau.":"");
+ document.getElementById("note").textContent=(nd?nd+" actifs sans cours pour cette période (gris). ":"")+(nv?nv+" actifs sans valeur actuelle : renseigne-la dans le tableau.":"")+(Object.keys(SUS).length?" ⚠ Cours incohérent ignoré pour "+Object.keys(SUS).join(", ")+" : vérifie le ticker dans fetch.py.":"");
+ renderDr();try{renderPr()}catch(e){showErr(e)}
  var cl={};it.forEach(function(x){var c=A.filter(function(a){return a[1]==x.k})[0][2];cl[c]=(cl[c]||0)+x.v});
  document.getElementById("al").innerHTML=Object.keys(cl).map(function(c){return"<div style='width:"+cl[c]/V*100+"%;background:"+CL[c]+"'></div>"}).join("");
  document.getElementById("lg").innerHTML=Object.keys(cl).map(function(c){return"<span style='--cc:"+CL[c]+"'>"+c+" "+(cl[c]/V*100).toFixed(0)+" %</span>"}).join("");
@@ -148,47 +104,31 @@ function render(){
  document.getElementById("bars").innerHTML=ms.map(function(k){var tt=0,st="";["Actions","ETF & Or","Crypto"].forEach(function(c){var x=M[k][c]||0;tt+=x;st+="<div style='height:"+x/mx*110+"px;background:"+CL[c]+"'></div>"});return"<div class='m'>"+tt.toFixed(0)+"<div class='st'>"+st+"</div>"+k.slice(5)+"/"+k.slice(2,4)+"</div>"}).join("");
  document.getElementById("lg2").innerHTML=Object.keys(CL).map(function(c){return"<span style='--cc:"+CL[c]+"'>"+c+"</span>"}).join("")}
 document.getElementById("impb").onclick=function(){try{var o=JSON.parse(document.getElementById("imp").value);Object.keys(o).forEach(function(d){L[d]=Object.assign(L[d]||{},o[d])});localStorage.setItem("pf4",JSON.stringify(L));document.getElementById("imp").value="";render()}catch(e){alert("JSON invalide")}};
-window.onresize=render;render();
+window.onresize=function(){try{render()}catch(e){showErr(e)}};try{render()}catch(e){showErr(e)}
 var _r=render;render=function(){_r();tools()};
-function mavg(){var d=new Date(),now=d.toISOString().slice(0,7);d.setMonth(d.getMonth()-6);var cut=d.toISOString().slice(0,7),cl={},tot=0;
- Object.keys(M).filter(function(k){return k>=cut&&k<now}).forEach(function(k){Object.keys(M[k]).forEach(function(c){var x=Math.max(0,M[k][c]);cl[c]=(cl[c]||0)+x;tot+=x})});
- var ak={};TX.forEach(function(x){if(x[3]>0&&x[0]>=cut+"-01"&&x[0].slice(0,7)<now)ak[x[1]]=(ak[x[1]]||0)+x[3]});
- return{avg:tot/6,cl:cl,tot:tot,ak:ak}}
 function tools(){
- var V=0,cl={},top=null,cls={};A.forEach(function(a){var v=val(a);if(v!=null){V+=v;cl[a[2]]=(cl[a[2]]||0)+v;if(!top||v>top[1])top=[a[0],v]}cls[a[1]]=a[2]});
+ var V=0,cl={},top=null;A.forEach(function(a){var v=val(a);if(v!=null){V+=v;cl[a[2]]=(cl[a[2]]||0)+v;if(!top||v>top[1])top=[a[0],v]}});
  var cr=(cl.Crypto||0)/V*100,w=[];
- if(cr>25)w.push("Crypto = "+cr.toFixed(0)+" % du portefeuille : très volatil.");
+ if(cr>25)w.push("Crypto = "+cr.toFixed(0)+" % du portefeuille : très volatil (jusqu'à -8 % en un jour).");
  if(top&&top[1]/V>0.2)w.push(top[0]+" pèse "+(top[1]/V*100).toFixed(0)+" % : concentration élevée.");
  var big=A.filter(function(a){var v=val(a);return v!=null&&(v/a[3]-1)<-0.3}).map(function(a){return a[1]});
  if(big.length)w.push("Plus de -30 % depuis l'achat : "+big.join(", ")+".");
  var sm=A.filter(function(a){return a[3]<20}).length;if(sm>3)w.push(sm+" lignes de moins de 20 € : peu d'impact, beaucoup de suivi.");
  document.getElementById("risk").innerHTML=w.length?w.map(function(x){return"<p style='margin:4px 0'>• "+x+"</p>"}).join(""):"Rien d'alarmant détecté.";
- var mv=mavg(),N=function(i){return parseFloat(String(document.getElementById(i).value).replace(",","."))||0},rmI=document.getElementById("rm"),pmI=document.getElementById("pm");
- if(mv.avg>0){if(!rmI.dataset.t)rmI.value=Math.round(mv.avg);if(!pmI.dataset.t)pmI.value=Math.round(mv.avg)}
- var C3=["Crypto","ETF & Or","Actions"],pct=function(c){return mv.tot>0?(mv.cl[c]||0)/mv.tot*100:(cl[c]||0)/V*100};
- document.getElementById("rh").textContent=mv.avg>0?"Calculé sur tes 6 derniers mois : tu verses environ "+fm(mv.avg,0)+" € par mois. Tes derniers achats : "+fm(pct("Crypto"),0)+" % crypto, "+fm(pct("ETF & Or"),0)+" % ETF & Or, "+fm(pct("Actions"),0)+" % actions.":"";
- var m=N("rm"),T=C3.map(function(c,i){return{c:c,t:N("t"+(i+1))}}),st=T.reduce(function(a,b){return a+b.t},0)||1,need=0;
+ var m=parseFloat(document.getElementById("rm").value.replace(",","."))||0,T=["Crypto","ETF & Or","Actions"].map(function(c,i){return{c:c,t:parseFloat(document.getElementById("t"+(i+1)).value)||0}}),st=T.reduce(function(a,b){return a+b.t},0)||1,need=0;
  T.forEach(function(x){x.cur=cl[x.c]||0;x.n=Math.max(0,(V+m)*x.t/st-x.cur);need+=x.n});
  T.forEach(function(x){x.buy=need?x.n/need*m:m*x.t/st});
  var h="<tr><th>Classe</th><th>Actuel</th><th>Objectif</th><th>À acheter</th></tr>";
- T.forEach(function(x){h+="<tr><td>"+x.c+"</td><td>"+fm(x.cur/V*100,0)+" %</td><td>"+fm(x.t/st*100,0)+" %</td><td><b>"+fm(x.buy,0)+" €</b></td></tr>"});
+ T.forEach(function(x){h+="<tr><td>"+x.c+"</td><td>"+(x.cur/V*100).toFixed(0)+" %</td><td>"+(x.t/st*100).toFixed(0)+" %</td><td><b>"+x.buy.toFixed(0)+" €</b></td></tr>"});
  document.getElementById("rb").innerHTML=h;
- var L2="";T.forEach(function(x){if(x.buy<1)return;var as=A.filter(function(a){return a[2]==x.c&&val(a)!=null}),ws=as.map(function(a){return mv.ak[a[1]]||0}),sw=ws.reduce(function(a,b){return a+b},0);
-  if(!sw){ws=as.map(function(){return 1});sw=as.length}
-  as.forEach(function(a,i){var e=x.buy*ws[i]/sw;if(e>=1)L2+="<div style='display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--grid)'><span>"+a[0]+"</span><b>"+fm(e,0)+" €</b></div>"})});
- document.getElementById("rl").innerHTML=L2?"<div class='s'>Répartition selon ce que tu achètes d'habitude :</div>"+L2:"";
- var pm=N("pm"),py=N("py"),mx={},tm=0;C3.forEach(function(c){mx[c]=mv.tot>0?(mv.cl[c]||0):(cl[c]||0);tm+=mx[c]});C3.forEach(function(c){mx[c]=tm?mx[c]/tm:1/3});
- document.getElementById("ph").textContent="Départ : ta valeur actuelle ("+fm(V,0)+" €). Versement mensuel réparti comme tes derniers achats ("+fm(mx.Crypto*100,0)+" % crypto, "+fm(mx["ETF & Or"]*100,0)+" % ETF & Or, "+fm(mx.Actions*100,0)+" % actions).";
- var SC=[["Prudent (0 % / 2 % / 2 %)",{Crypto:0,"ETF & Or":2,Actions:2}],["Médian (8 % / 6 % / 6 %)",{Crypto:8,"ETF & Or":6,Actions:6}],["Optimiste (15 % / 9 % / 9 %)",{Crypto:15,"ETF & Or":9,Actions:9}]],inv=V+pm*py*12,hp="<tr><th>Scénario (crypto / ETF / actions par an)</th><th>Investi</th><th>Valeur finale</th></tr>";
- SC.forEach(function(sc){var tot=0;C3.forEach(function(c){var x=cl[c]||0,r=Math.pow(1+sc[1][c]/100,1/12)-1;for(var k=0;k<py*12;k++)x=x*(1+r)+pm*mx[c];tot+=x});hp+="<tr><td>"+sc[0]+"</td><td>"+fm(inv,0)+" €</td><td><b>"+fm(tot,0)+" €</b></td></tr>"});
+ var pm=parseFloat(document.getElementById("pm").value.replace(",","."))||0,py=parseFloat(document.getElementById("py").value)||0,hp="<tr><th>Rendement/an</th><th>Investi</th><th>Valeur finale</th></tr>";
+ [0,5,8].forEach(function(r){var i=Math.pow(1+r/100,1/12)-1,x=V;for(var k=0;k<py*12;k++)x=x*(1+i)+pm;hp+="<tr><td>"+r+" %</td><td>"+(V+pm*py*12).toFixed(0)+" €</td><td><b>"+x.toFixed(0)+" €</b></td></tr>"});
  document.getElementById("pj").innerHTML=hp}
-["rm","t1","t2","t3","pm","py"].forEach(function(i){document.getElementById(i).oninput=function(){this.dataset.t=1;tools()}});
-document.querySelectorAll("#rt button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#rt button").forEach(function(x){x.className=x==b?"on":""});document.getElementById("rp").style.display=b.dataset.r=="p"?"":"none";document.getElementById("idees").style.display=b.dataset.r=="i"?"":"none"}});
+["rm","t1","t2","t3","pm","py"].forEach(function(i){document.getElementById(i).oninput=tools});
 document.getElementById("ex").onclick=function(){var c="actif;code;classe;investi;quantite;valeur\n"+A.map(function(a){return[a[0],a[1],a[2],a[3],a[4],val(a)==null?"":val(a)].join(";")}).join("\n");var b=new Blob([c],{type:"text/csv"}),u=URL.createObjectURL(b),l=document.createElement("a");l.href=u;l.download="positions.csv";l.click()};
 
 var KM={"Safran": ["SAF", "Safran"], "Core S&P 500 USD (Acc)": ["SPX", "Core S&P 500"], "MSCI Emerging Markets EUR (Acc)": ["EM", "MSCI Emerging Markets"], "Core Stoxx Europe 600 EUR (Acc)": ["SXXP", "Core Stoxx Europe 600"], "Physical Gold": ["GOLD", "Or (Physical Gold)"], "SpaceX": ["SPCX", "SpaceX"], "MSCI Africa Top 50 Swap USD (Acc)": ["AFR", "MSCI Africa Top 50"], "Bitcoin": ["BTC", "Bitcoin"], "Render": ["RNDR", "Render"], "Ethereum": ["ETH", "Ethereum"], "XRP": ["XRP", "XRP"], "Solana": ["SOL", "Solana"], "Hedera": ["HBAR", "Hedera"], "Alibaba Group": ["BABA", "Alibaba Group"], "Avenir Telecom": ["ATEL", "Avenir Telecom"], "Fluence Energy": ["FLNC", "Fluence Energy"], "LVMH Moët Hennessy": ["LVMH", "LVMH"], "Uranium USD (Acc)": ["URA", "Uranium"], "Air Liquide": ["AI", "Air Liquide"], "Apple": ["AAPL", "Apple"], "Private Equity": ["APO", "Private Equity (Apollo)"]};
 try{var S=JSON.parse(localStorage.getItem("pf6")||"null");if(S){A=S.A;M=S.M}}catch(e){}
-document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#nav button").forEach(function(x){x.className=x==b?"on":""});var t=b.dataset.t;document.querySelectorAll(".pf").forEach(function(e){e.style.display=t=="pf"?"":"none"});document.getElementById("ac").style.display=t=="ac"?"":"none";document.getElementById("fu").style.display=t=="fu"?"":"none";document.getElementById("vc").style.display=t=="vc"?"":"none";if(t=="pf")render();if(t=="vc")castor()}});
 function pcsv(t){var r=[],row=[],c="",q=false;for(var i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==","){row.push(c);c=""}else if(ch=="\n"){row.push(c);r.push(row);row=[];c=""}else if(ch!="\r")c+=ch}if(c!==""||row.length){row.push(c);r.push(row)}return r}
 document.getElementById("csvf").onchange=function(e){var fl=e.target.files[0];if(!fl)return;var rd=new FileReader();rd.onload=function(){try{
  var R=pcsv(String(rd.result)),H=R[0],ix={};H.forEach(function(h,i){ix[h]=i});
@@ -202,98 +142,158 @@ document.getElementById("csvf").onchange=function(e){var fl=e.target.files[0];if
   if(cost<=0&&o)cost=o[3];if(o&&o[5]!=null)v=Math.round(o[5]*p.sh/o[4]*100)/100;NA.push([nm,k,cl,cost,Math.round(p.sh*1e6)/1e6,v])});
  A=NA;M=Mo;localStorage.setItem("pf6",JSON.stringify({A:A,M:M,ts:new Date().toISOString()}));document.getElementById("csvm").textContent="OK : "+tr.length+" transactions lues, "+A.length+" positions.";render()}catch(err){document.getElementById("csvm").textContent="Erreur de lecture du CSV."}};rd.readAsText(fl)};
 
-var TX=[],RG=4,SEL="pf",DM=0,RGS=[["1M",30],["3M",90],["6M",180],["1A",365],["Tout",99999]];
-var PAL=["#4b8fe0","#f2a93b","#3fa35a","#a56be0","#e0584b","#2bb5b5","#e08fb0","#8d93a6","#c9d14b","#6f7bd9"];
-var ZONE={SAF:"Europe",SXXP:"Europe",LVMH:"Europe",AI:"Europe",ATEL:"Europe",SPX:"USA",AAPL:"USA",FLNC:"USA",SPCX:"USA",APO:"USA",EM:"Émergents",AFR:"Émergents",BABA:"Émergents",BTC:"Crypto",ETH:"Crypto",XRP:"Crypto",SOL:"Crypto",RNDR:"Crypto",HBAR:"Crypto",GOLD:"Or",URA:"Matières"};
-function fm(x,d){return x.toLocaleString("fr-FR",{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d})}
-function fd(d,sh){var p=d.split("-");return sh?p[2]+"/"+p[1]+"/"+p[0].slice(2):p[2]+"/"+p[1]+"/"+p[0]}
-//CURVES_START
-function ps(k){var ds=Object.keys(L).filter(function(d){return L[d][k]!=null}).sort();if(!ds.length||PX[k]==null)return null;var pr=PX[k],out=[];for(var i=ds.length-1;i>=0;i--){out.unshift([ds[i],pr]);pr=pr/(1+L[ds[i]][k]/100)}return out}
-function curves(){
- if(!TX.length)return null;
- var tx=TX.slice().sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0}),first=tx[0][0],P={},set={},keys={};
- tx.forEach(function(x){keys[x[1]]=1;set[x[0]]=1});
- Object.keys(keys).forEach(function(k){var s=ps(k);if(s){P[k]={};s.forEach(function(p){P[k][p[0]]=p[1];if(p[0]>=first)set[p[0]]=1})}});
- var ds=Object.keys(set).sort(),S={},last={},net=0,i=0,v=[],n=[];
- ds.forEach(function(d){
-  while(i<tx.length&&tx[i][0]<=d){var x=tx[i++],st=S[x[1]]||(S[x[1]]={sh:0,cost:0});
-   if(x[2]>0){st.sh+=x[2];st.cost+=x[3]}else{var f=st.sh>0?-x[2]/st.sh:0;st.cost*=Math.max(0,1-f);st.sh+=x[2]}net+=x[3]}
-  var tot=0;Object.keys(S).forEach(function(k){var st=S[k];if(P[k]&&P[k][d]!=null)last[k]=P[k][d];if(st.sh>1e-6)tot+=last[k]!=null?st.sh*last[k]:st.cost});
-  v.push([d,Math.round(tot*100)/100]);n.push([d,Math.round(net*100)/100])});
- return{v:v,n:n}}
-//CURVES_END
-function lineChart(el,S){
- var w=el.clientWidth||320,h=230,pl=46,pr=10,pt=12,pb=24,n=S[0].pts.length;
- if(n<2){el.innerHTML="<p class='s'>Pas assez de données.</p>";return}
- var all=[];S.forEach(function(s){s.pts.forEach(function(p){all.push(p[1])})});
- var mn=Math.min.apply(null,all),mx=Math.max.apply(null,all),pd=(mx-mn)*.08||1;mn-=pd;mx+=pd;
- var X=function(i){return pl+i*(w-pl-pr)/(n-1)},Y=function(v){return pt+(1-(v-mn)/(mx-mn))*(h-pt-pb)};
- var g="";for(var k=0;k<=3;k++){var v=mn+(mx-mn)*k/3,y=Y(v);g+="<line x1='"+pl+"' x2='"+(w-pr)+"' y1='"+y+"' y2='"+y+"' stroke='var(--grid)'/><text x='"+(pl-6)+"' y='"+(y+4)+"' text-anchor='end' font-size='10' fill='var(--mut)'>"+(Math.abs(v)>=1000?fm(v/1000,1)+"k":fm(v,Math.abs(v)<10?2:0))+"</text>"}
- var xl="";[0,.33,.66,1].forEach(function(f){var i=Math.round(f*(n-1));xl+="<text x='"+X(i)+"' y='"+(h-6)+"' text-anchor='"+(f==0?"start":f==1?"end":"middle")+"' font-size='10' fill='var(--mut)'>"+fd(S[0].pts[i][0],1)+"</text>"});
- var pa=S.map(function(s){return"M"+s.pts.map(function(p,i){return X(i).toFixed(1)+","+Y(p[1]).toFixed(1)}).join("L")});
- var c0=S[0].color,svg="<svg width='"+w+"' height='"+h+"'><defs><linearGradient id='ga' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='"+c0+"' stop-opacity='.35'/><stop offset='1' stop-color='"+c0+"' stop-opacity='0'/></linearGradient></defs>"+g+xl+"<path d='"+pa[0]+"L"+X(n-1)+","+(h-pb)+"L"+pl+","+(h-pb)+"Z' fill='url(#ga)'/>";
- S.forEach(function(s,j){svg+="<path d='"+pa[j]+"' fill='none' stroke='"+s.color+"' stroke-width='2.2'"+(s.dash?" stroke-dasharray='5 4'":"")+" stroke-linejoin='round'/>"});
- svg+="<line id='cl' y1='"+pt+"' y2='"+(h-pb)+"' stroke='var(--mut)' stroke-dasharray='3 3' style='display:none'/><g id='cd'></g><rect id='cr' x='"+pl+"' y='0' width='"+(w-pl-pr)+"' height='"+h+"' fill='transparent' style='touch-action:pan-y;cursor:crosshair'/></svg><div class='tt' id='tt'></div>";
- el.innerHTML=svg;
- var cr=el.querySelector("#cr"),cl=el.querySelector("#cl"),cd=el.querySelector("#cd"),tt=el.querySelector("#tt");
- function mv(e){var r=cr.getBoundingClientRect(),i=Math.round((e.clientX-r.left)/r.width*(n-1));i=Math.max(0,Math.min(n-1,i));var x=X(i);cl.setAttribute("x1",x);cl.setAttribute("x2",x);cl.style.display="";
-  cd.innerHTML=S.map(function(s){return"<circle cx='"+x+"' cy='"+Y(s.pts[i][1])+"' r='4.5' fill='"+s.color+"' stroke='var(--card)' stroke-width='2'/>"}).join("");
-  var t="<b>"+fd(S[0].pts[i][0])+"</b>";S.forEach(function(s){t+="<br><span style='color:"+s.color+"'>●</span> "+s.name+" : "+fm(s.pts[i][1])+" €"});
-  if(S.length>1){var gn=S[0].pts[i][1]-S[1].pts[i][1];t+="<br>Gain : <b style='color:"+(gn>=0?"var(--g)":"var(--r)")+"'>"+(gn>=0?"+":"")+fm(gn)+" €</b>"}
-  tt.innerHTML=t;tt.style.display="block";var tw=tt.offsetWidth;tt.style.left=Math.max(0,Math.min(w-tw,x-tw/2))+"px"}
- cr.onpointermove=mv;cr.onpointerdown=mv;cr.onpointerleave=function(){cl.style.display="none";cd.innerHTML="";tt.style.display="none"}}
-function charts(){
- var rg=document.getElementById("rg");if(!rg)return;rg.innerHTML="";
- RGS.forEach(function(r,i){var b=document.createElement("button");b.textContent=r[0];if(i==RG)b.className="on";b.onclick=function(){RG=i;charts()};rg.appendChild(b)});
- var sel=document.getElementById("sel"),opts="<option value='pf'>Ma valeur et mon versé net</option>";
- A.forEach(function(a){if(ps(a[1]))opts+="<option value='"+a[1]+"'>Cours : "+a[0]+"</option>"});
- if(sel.dataset.o!=opts){sel.innerHTML=opts;sel.dataset.o=opts}sel.value=SEL;sel.onchange=function(){SEL=sel.value;charts()};
- var el=document.getElementById("ch"),N=RGS[RG][1],kk=document.getElementById("chk");
- function cut(a){var l=new Date(a[a.length-1][0]).getTime()-N*864e5;return a.filter(function(p){return new Date(p[0]).getTime()>=l})}
- if(SEL=="pf"){var c=curves();if(!c){el.innerHTML="<p class='s'>Les transactions se chargent depuis GitHub (data/portfolio.json) : cette courbe s'affiche sur ton site GitHub.</p>";kk.innerHTML="";return}
-  var vi=c.v.length-1,v=cut(c.v),nn=c.n.slice(c.n.length-v.length);
-  lineChart(el,[{name:"Valeur",color:"#3fa35a",pts:v},{name:"Versé net",color:"#f2a93b",pts:nn,dash:true}]);
-  var gv=c.v[vi][1]-c.n[vi][1];kk.innerHTML="<div><span class='s'>Valeur</span><b>"+fm(c.v[vi][1],0)+" €</b></div><div><span class='s'>Versé net</span><b>"+fm(c.n[vi][1],0)+" €</b></div><div><span class='s'>Gain</span><b class='"+(gv>=0?"up":"dn")+"'>"+(gv>=0?"+":"")+fm(gv,0)+" €</b></div>"}
- else{var s=ps(SEL);if(!s){el.innerHTML="";return}var d=cut(s);lineChart(el,[{name:"Cours",color:"#4b8fe0",pts:d}]);var ch=(d[d.length-1][1]/d[0][1]-1)*100;kk.innerHTML="<div><span class='s'>Dernier cours</span><b>"+fm(d[d.length-1][1])+" €</b></div><div><span class='s'>Sur la période</span><b class='"+(ch>=0?"up":"dn")+"'>"+(ch>=0?"+":"")+fm(ch,1)+" %</b></div>"}
- // objectif
- var inv=0;A.forEach(function(a){inv+=a[3]});var ob=parseFloat(String(document.getElementById("ob").value).replace(",","."))||5000;
- document.getElementById("obt").innerHTML="<b>"+fm(inv,0)+" € investis sur "+fm(ob,0)+" €</b> ("+fm(inv/ob*100,0)+" %)<div class='bar'><div style='width:"+Math.min(100,inv/ob*100)+"%'></div></div>";
- document.getElementById("ob").oninput=function(){try{localStorage.setItem("pf8",this.value)}catch(e){}charts()};
- donut();zones()}
-function donut(){
- var dm=document.getElementById("dm");dm.innerHTML="";["Par actif","Par classe","Par zone"].forEach(function(t,i){var b=document.createElement("button");b.textContent=t;if(i==DM)b.className="on";b.onclick=function(){DM=i;donut()};dm.appendChild(b)});
- var m={},V=0;A.forEach(function(a){var v=val(a);if(v==null)return;V+=v;var k=DM==0?a[0]:DM==1?a[2]:(ZONE[a[1]]||"Autre");m[k]=(m[k]||0)+v});
- var it=Object.keys(m).map(function(k){return{n:k,v:m[k]}}).sort(function(a,b){return b.v-a.v});
- if(DM==0&&it.length>9){var r=it.slice(8).reduce(function(a,b){return a+b.v},0);it=it.slice(0,8);it.push({n:"Autres",v:r})}
- var C=2*Math.PI*70,off=0,svg="<svg width='200' height='200' viewBox='0 0 200 200'>",lg="";
- it.forEach(function(x,i){var f=x.v/V,c=PAL[i%PAL.length];svg+="<circle class='sg' data-i='"+i+"' cx='100' cy='100' r='70' fill='none' stroke='"+c+"' stroke-width='34' stroke-dasharray='"+Math.max(0,f*C-1.5)+" "+C+"' stroke-dashoffset='"+(-off)+"' transform='rotate(-90 100 100)' style='cursor:pointer'/>";off+=f*C;lg+="<div><span><i style='background:"+c+"'></i>"+x.n+"</span><b>"+fm(f*100,1)+" %</b></div>"});
- svg+="<text id='dc1' x='100' y='96' text-anchor='middle' font-size='13' fill='var(--mut)'>Total</text><text id='dc2' x='100' y='118' text-anchor='middle' font-size='18' font-weight='700' fill='var(--tx)'>"+fm(V,0)+" €</text></svg>";
- var dn=document.getElementById("dn");dn.innerHTML=svg+"<div class='lgd'>"+lg+"</div>";
- dn.querySelectorAll(".sg").forEach(function(c){var h=function(){var x=it[+c.dataset.i];dn.querySelector("#dc1").textContent=x.n.length>16?x.n.slice(0,15)+"…":x.n;dn.querySelector("#dc2").textContent=fm(x.v/V*100,1)+" %"};c.onpointerenter=h;c.onclick=h})}
-function zones(){
- var z={},V=0,top=null,cr=0;A.forEach(function(a){var v=val(a);if(v==null)return;V+=v;var k=ZONE[a[1]]||"Autre";z[k]=(z[k]||0)+v;if(!top||v>top[1])top=[a[0],v]});
- var h="<tr><th>Zone / type</th><th>Poids</th></tr>";Object.keys(z).sort(function(a,b){return z[b]-z[a]}).forEach(function(k){h+="<tr><td>"+k+"</td><td>"+fm(z[k]/V*100,1)+" %</td></tr>"});
- document.getElementById("zt").innerHTML=h;
- var g=function(k){return fm((z[k]||0)/V*100,0)+" %"},sg="<div class='sg'><p><b>Ce que ta répartition montre</b><br>• Plus grosse ligne : "+top[0]+" ("+fm(top[1]/V*100,0)+" %). Crypto : "+g("Crypto")+". Or : "+g("Or")+".<br>• Aucune poche stable (obligations, fonds monétaire) : rien qui amortit quand tout baisse en même temps.<br>• Pas de santé ni de consommation de base, qui bougent moins que la tech.</p><p><b>Des pistes à explorer</b><br>• 🌍 <b>ETF monde</b> (MSCI World ou All-World) : une seule ligne, plus de 1 500 entreprises.<br>• 🛡️ <b>Obligations ou fonds monétaire</b> : un amortisseur pour les mauvaises semaines.<br>• 💊 <b>ETF santé / consommation de base</b> : secteurs plus calmes.<br>• 🏠 <b>Immobilier coté (REIT)</b> ou SCPI : revenus réguliers, plutôt long terme.<br>• 🌏 <b>Inde, Japon, petites capitalisations</b> : d'autres moteurs de croissance.<br>• 🧾 <b>L'enveloppe</b> (PEA, assurance-vie) compte aussi pour la fiscalité.</p><p class='s'>Repère courant : un noyau large et stable (60 à 70 %), quelques paris (20 à 30 %), la crypto limitée (souvent 10 % ou moins). C'est un exemple, pas une règle.</p></div>";
- document.getElementById("sg").innerHTML=sg}
-function castor(){
- var G=function(i){return parseFloat(String(document.getElementById(i).value).replace(",","."))||0};
- var v=G("k1"),dj=G("k6"),pr=G("k2")||1,cu=G("k3"),hy=G("k4"),sal=G("k5");
- var F=function(x){return Math.min(3500,2*Math.min(x,500)+Math.max(0,Math.min(x,2000)-500)+.5*Math.max(0,Math.min(x,4000)-2000))};
- var ab=F(dj+v)-F(dj),tot=v+ab,pa=tot/pr,va=pa*cu,gn=va-v,fu=va*(1+hy/100);
- var R=function(a,b,c){return"<tr><td>"+a+"</td><td"+(c?" class='"+c+"'":"")+">"+b+"</td></tr>"};
- document.getElementById("kt").innerHTML=R("Ton versement",fm(v)+" €")+R("Abondement brut",fm(ab)+" € ("+fm(v?ab/v*100:0,0)+" % de ton versement)","up")+R("Total investi dans Castor",fm(tot)+" €")+R("Prix de souscription vs cours actuel",fm(pr)+" € vs "+fm(cu)+" € ("+fm(cu?(pr/cu-1)*100:0,1)+" %)")+R("Nombre de parts",fm(pa,2))+R("Valeur au cours actuel",fm(va)+" €")+R("Gain immédiat sur ton versement",(gn>=0?"+":"")+fm(gn)+" € ("+fm(v?gn/v*100:0,0)+" %)",gn>=0?"up":"dn")+R("Valeur à 5 ans (hypothèse "+(hy>=0?"+":"")+fm(hy,0)+" %)",fm(fu)+" €");
- var w=[];if(sal>0&&dj+v>.25*sal)w.push("⚠️ Tu dépasses 25 % de ton salaire annuel brut ("+fm(.25*sal,0)+" €), plafond habituel : vérifie ton plafond.");if(dj+v>4000)w.push("Au-delà de 4 000 € versés, il n'y a plus d'abondement.");if(cu&&pr>cu)w.push("Le prix de souscription est supérieur au cours : si le cours reste bas, ton gain baisse (mais l'abondement compense largement ici).");
- document.getElementById("kw").innerHTML=w.join("<br>")}
-["k1","k2","k3","k4","k5","k6"].forEach(function(i){document.getElementById(i).oninput=castor});
-try{var o8=localStorage.getItem("pf8");if(o8)document.getElementById("ob").value=o8}catch(e){}
-function bets(){var B={};try{B=JSON.parse(localStorage.getItem("pf9")||"{}")}catch(e){}document.querySelectorAll("select.bet").forEach(function(s){s.value=B[s.dataset.k]||"";s.onchange=function(){B[s.dataset.k]=s.value;try{localStorage.setItem("pf9",JSON.stringify(B))}catch(e){}}})}
-bets();castor();
-var _r2=render;render=function(){_r2();charts()};
-window.addEventListener("resize",charts);
-
-fetch("data/portfolio.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){TX=j.T||[];ANC=j.anchor||"";if(j.generated>((S&&S.ts)||"")){A=j.A;M=j.M}render()}).catch(function(){});
+fetch("data/portfolio.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){if(j.generated>((S&&S.ts)||"")){A=j.A;M=j.M;render()}}).catch(function(){});
 fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PX=j.px||{};Object.keys(j.hist||{}).forEach(function(d){L[d]=Object.assign(L[d]||{},j.hist[d])});document.getElementById("sub").textContent+=" · cours du "+j.updated;render()}).catch(function(){});
-fetch("news.html?"+Date.now()).then(function(r){return r.text()}).then(function(t){var p=t.split("<!--FU-->");document.getElementById("ac").innerHTML=p[0];var q=(p[1]||"").split("<!--ID-->");document.getElementById("fu").innerHTML=q[0];if(q[1])document.getElementById("idees").innerHTML=q[1];bets()}).catch(function(){});
+fetch("news.html?"+Date.now()).then(function(r){return r.text()}).then(function(t){var p=t.split("<!--FU-->");document.getElementById("ac").innerHTML=p[0];document.getElementById("fu").innerHTML=p[1]||""}).catch(function(){});
 render();
+/* ===== Onglet Explorer : l'intérieur des ETF et des cryptos ===== */
+var PAL=["#4b8fe0","#f2a93b","#a56be0","#3fa35a","#c24b4b","#38b2ac","#8d93a6"],exSel="SPX";
+var EXD={
+SPX:{nom:"Core S&P 500",sub:"Les 500 plus grandes entreprises américaines",ter:"0,07 %",n:"503",t10:37.8,src:"justETF, 26/10/2026",
+ pays:[["États-Unis",97.48],["Irlande",1.15],["Autres",1.37]],
+ sect:[["Technologie",45.2],["Finance",13.6],["Santé",9.1],["Conso. de base",8.9],["Autres",23.2]],
+ top:[["NVIDIA",8.07],["Apple",7.03],["Microsoft",5.69],["Amazon",3.84],["Alphabet",5.39],["Broadcom",2.65],["Meta",1.90],["Micron",1.63],["Tesla",1.56]],
+ note:"10 entreprises pèsent 38 % du fonds, et NVIDIA + Apple + Microsoft à elles trois environ 21 %. Avec 45 % de technologie, tu es surtout exposé à l'IA américaine, pas à « toute l'économie »."},
+EM:{nom:"MSCI Emerging Markets",sub:"Actions des pays émergents (Amundi, réplication par swap)",ter:"0,20 %",n:"≈ 1 170",t10:38.9,src:"fonds MSCI EM, 11/11/2026",
+ pays:[["Taïwan",28.8],["Corée du Sud",21.3],["Chine",17.7],["Inde",10.6],["Autres",21.6]],
+ sect:[["Technologie",46.6],["Finance",21.1],["Autres",32.3]],
+ top:[["TSMC",15.57],["Samsung",7.53],["SK hynix",5.88],["Tencent",2.73],["Alibaba",1.85],["MediaTek",1.81],["Delta Electronics",0.94],["China Construction Bank",0.85],["Hon Hai",0.79]],
+ note:"TSMC pèse à elle seule près de 16 %. Taïwan + Corée font 50 % de l'indice : les « émergents » sont devenus en grande partie un pari sur les puces électroniques. La Chine ne représente plus que 17,7 %."},
+SXXP:{nom:"Core Stoxx Europe 600",sub:"600 grandes entreprises européennes",ter:"0,07 à 0,20 % selon la version",n:"≈ 600",t10:19.5,src:"iShares / TradingView, 2026",
+ pays:null,
+ sect:[["Finance",23.9],["Santé",13.3],["Autres",62.8]],
+ top:[["ASML",4.48],["HSBC",2.23],["Roche",1.94],["AstraZeneca",1.83],["Novartis",1.81]],
+ note:"Le plus diversifié de tes ETF : aucune entreprise ne dépasse environ 4,5 %. Finance et santé font 37 % à elles deux. Attention : l'Europe du STOXX 600 inclut le Royaume-Uni et la Suisse, pas seulement la zone euro."},
+AFR:{nom:"MSCI Africa Top 50",sub:"Les plus grandes entreprises d'Afrique",ter:"≈ 0,65 %",n:"39",t10:null,src:"MSCI, 29/05/2026",
+ pays:[["Afrique du Sud",42.79],["Maroc",32.57],["Égypte",16.88],["Kenya",7.77]],
+ sect:null,top:null,
+ note:"Marché de niche : trois pays (Afrique du Sud, Maroc, Égypte) font 92 % de l'indice, avec seulement 39 entreprises. Ces ETF sont souvent répliqués par swap (réplication synthétique) et coûtent plus cher que les ETF classiques."},
+GOLD:{nom:"Physical Gold",sub:"Or physique",ter:"—",n:"—",t10:null,src:"—",pays:null,sect:null,top:null,
+ note:"Pas de composition à regarder : le fonds détient de l'or physique en lingots, donc aucune entreprise derrière. L'or ne verse ni dividende ni intérêt, son prix dépend surtout du dollar et des taux réels."},
+URA:{nom:"Uranium",sub:"Mineurs d'uranium (composition type : Sprott Uranium Miners)",ter:"≈ 0,85 %",n:"43",t10:75.0,src:"Trackinsight, 30/09/2026",
+ pays:null,
+ sect:[["Mineurs (énergie)",74.3],["Fonds d'uranium physique",13.7],["Industrie",7.7],["Autres",4.3]],
+ top:[["Kazatomprom",16.05],["Cameco",15.30],["Sprott Physical Uranium",13.73],["Paladin Energy",5.07],["NexGen",4.69],["Yellow Cake",4.50],["Denison",4.28],["Uranium Energy",4.14],["Deep Yellow",3.71],["Energy Fuels",3.50]],
+ note:"Très concentré : 3 lignes font 45 % du fonds. Ce sont des petites sociétés minières très sensibles au prix de l'uranium. Ce profil est celui d'un ETF type : vérifie que c'est bien le tien."}
+};
+var CRY={
+BTC:["Bitcoin","Réserve de valeur","Offre plafonnée à 21 millions, sécurisé par des mineurs (preuve de travail). Souvent comparé à de l'or numérique.","Très lié aux flux des ETF Bitcoin US et à la liquidité mondiale."],
+ETH:["Ethereum","Plateforme de contrats","Réseau sur lequel tournent la finance décentralisée, les stablecoins et les NFT. Sécurisé par la mise en jeu d'ETH (preuve d'enjeu).","Concurrence d'autres blockchains, usage et frais variables."],
+XRP:["XRP","Paiements","Conçu pour les transferts internationaux rapides entre banques et entreprises. L'offre de départ (100 milliards) a été créée d'un coup et en partie gardée par Ripple.","Dépend d'une entreprise (Ripple) et du cadre réglementaire."],
+SOL:["Solana","Blockchain rapide","Réseau à frais très bas et à grande vitesse, utilisé pour les paiements, les mèmecoins et la finance décentralisée.","Pannes passées, forte concurrence avec Ethereum."],
+RNDR:["Render","IA / puissance GPU","Place de marché où des particuliers louent la puissance de leurs cartes graphiques pour du rendu 3D et de l'IA. Le jeton sert à payer.","Très sensible à l'enthousiasme (ou au doute) sur l'IA."],
+HBAR:["Hedera","Réseau d'entreprises","Réseau géré par un conseil de grandes entreprises (Google, IBM…). Offre maximale de 50 milliards de jetons.","Moins décentralisé que Bitcoin ou Ethereum."]
+};
+function fm(x,d){return x.toFixed(d==null?1:d).replace(".",",")}
+function bars(rows,fmt,col){var mx=Math.max.apply(null,rows.map(function(r){return r[1]}))||1;return rows.map(function(r){return "<div class='br'><span class='l'>"+r[0]+"</span><div class='bw'><i style='width:"+r[1]/mx*100+"%;background:"+(col||"var(--c2)")+"'></i></div><b>"+fmt(r[1])+"</b></div>"}).join("")}
+function stack(rows){var t=rows.reduce(function(a,r){return a+r[1]},0)||1;return "<div class='sk'>"+rows.map(function(r,i){return "<div title='"+r[0]+" "+fm(r[1])+" %' style='width:"+r[1]/t*100+"%;background:"+PAL[i%PAL.length]+"'></div>"}).join("")+"</div><div class='lg' style='margin-top:6px'>"+rows.map(function(r,i){return "<span style='--cc:"+PAL[i%PAL.length]+"'>"+r[0]+" "+fm(r[1])+" %</span>"}).join("")+"</div>"}
+function valK(k){var a=A.filter(function(q){return q[1]==k})[0];return a?val(a):null}
+function ser(k){return Object.keys(L).sort().filter(function(d){return L[d][k]!=null}).map(function(d){return[d,L[d][k]]})}
+function cst(k,ref,per){var s=ser(k);if(s.length<30)return null;var v=s.map(function(x){return x[1]}),m=v.reduce(function(a,b){return a+b},0)/v.length,sd=Math.sqrt(v.reduce(function(a,b){return a+(b-m)*(b-m)},0)/(v.length-1)),r={vol:sd*Math.sqrt(per),worst:Math.min.apply(null,v),n:v.length,corr:null,beta:null};
+ if(ref&&k!=ref){var rm={};ser(ref).forEach(function(x){rm[x[0]]=x[1]});var xs=[],ys=[];s.forEach(function(x){if(rm[x[0]]!=null){xs.push(rm[x[0]]);ys.push(x[1])}});if(xs.length>=30){var mx=xs.reduce(function(a,b){return a+b},0)/xs.length,my=ys.reduce(function(a,b){return a+b},0)/ys.length,sxy=0,sxx=0,syy=0;for(var i=0;i<xs.length;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)*(xs[i]-mx);syy+=(ys[i]-my)*(ys[i]-my)}if(sxx>0&&syy>0){r.corr=sxy/Math.sqrt(sxx*syy);r.beta=sxy/sxx}}}
+ return r}
+function renderEx(){
+ var el=document.getElementById("ex2");if(!el)return;
+ var V2=0;A.forEach(function(a){var v=val(a);if(v!=null)V2+=v});V2=V2||1;
+ var h="<div class='card'><h2>🔎 Explorer l'intérieur de ton portefeuille</h2><p class='s'>Compositions issues de sources publiques (justETF, MSCI, Trackinsight), 2026. Elles changent peu d'un mois à l'autre mais ne sont pas en direct. Pas un conseil.</p></div>";
+ /* 1. Ce que tu possèdes vraiment */
+ var vE={};["SPX","EM","SXXP","AFR"].forEach(function(k){vE[k]=valK(k)});
+ var co={};["SPX","EM","SXXP"].forEach(function(k){if(vE[k]==null)return;EXD[k].top.forEach(function(t){co[t[0]]=co[t[0]]||{e:0,d:0};co[t[0]].e+=vE[k]*t[1]/100})});
+ A.forEach(function(a){var v=val(a);if(a[2]!="Actions"||v==null)return;var n=a[1]=="BABA"?"Alibaba":a[0];co[n]=co[n]||{e:0,d:0};co[n].d+=v});
+ var cr=Object.keys(co).map(function(n){return[n,co[n].e+co[n].d,co[n].d,co[n].e]}).sort(function(a,b){return b[1]-a[1]}).slice(0,12),mx=cr.length?cr[0][1]:1;
+ h+="<div class='card'><h2>🏢 Les entreprises derrière tes lignes</h2><p class='s'>Tes actions directes + ce que tes ETF détiennent. Vue partielle : seulement les plus grosses lignes de chaque ETF.</p>"+
+  cr.map(function(r){return "<div class='br'><span class='l'>"+r[0]+"</span><div class='bw'><i style='width:"+r[2]/mx*100+"%;background:var(--c3);border-radius:6px 0 0 6px;display:inline-block'></i><i style='width:"+r[3]/mx*100+"%;background:var(--c2);border-radius:0 6px 6px 0;display:inline-block'></i></div><b style='width:96px'>"+Math.round(r[1])+" € · "+fm(r[1]/V2*100)+" %</b></div>"}).join("")+
+  "<div class='lg' style='margin-top:8px'><span style='--cc:var(--c3)'>en direct</span><span style='--cc:var(--c2)'>via tes ETF</span></div></div>";
+ var geo={},gt=0;function ad(n,v){if(v>0){geo[n]=(geo[n]||0)+v;gt+=v}}
+ if(vE.SPX!=null)EXD.SPX.pays.forEach(function(p){ad(p[0]=="États-Unis"?"États-Unis":"Autres",vE.SPX*p[1]/100)});
+ if(vE.EM!=null)EXD.EM.pays.forEach(function(p){ad(p[0]=="Autres"?"Autres émergents":p[0],vE.EM*p[1]/100)});
+ if(vE.SXXP!=null)ad("Europe",vE.SXXP);if(vE.AFR!=null)ad("Afrique",vE.AFR);
+ var gr=Object.keys(geo).map(function(k){return[k,geo[k]]}).sort(function(a,b){return b[1]-a[1]});
+ var tech=0,tb=0;["SPX","EM"].forEach(function(k){if(vE[k]!=null){tb+=vE[k];tech+=vE[k]*EXD[k].sect[0][1]/100}});
+ h+="<div class='card'><h2>🌍 Où est investi l'argent de tes ETF</h2><p class='s'>Parties ETF seulement (S&amp;P 500, MSCI EM, STOXX 600, Afrique), hors or, cryptos et actions directes.</p>"+bars(gr,function(v){return Math.round(v)+" € · "+fm(v/(gt||1)*100)+" %"})+
+  (tb?"<p style='margin:10px 0 0'>💻 <b>Technologie</b> : environ "+Math.round(tech)+" € de ton S&amp;P 500 + MSCI EM, soit "+fm(tech/tb*100,0)+" % de ces deux ETF.</p>":"")+"</div>";
+ /* 2. Zoom ETF */
+ h+="<div class='card'><h2>📦 Zoom sur un ETF</h2><div class='tabs'>"+Object.keys(EXD).map(function(k){return "<button data-ex='"+k+"' class='"+(k==exSel?"on":"")+"'>"+k+"</button>"}).join("")+"</div>";
+ var d=EXD[exSel],vv=valK(exSel);
+ h+="<div style='margin-bottom:8px'><b style='font-size:16px'>"+d.nom+"</b><div class='s'>"+d.sub+"</div></div><div class='kp' style='margin-bottom:10px'><div><span class='s'>Ta valeur</span><b>"+(vv==null?"—":Math.round(vv)+" €")+"</b></div><div><span class='s'>Entreprises</span><b>"+d.n+"</b></div><div><span class='s'>Top 10</span><b>"+(d.t10==null?"—":fm(d.t10,0)+" %")+"</b></div><div><span class='s'>Frais (TER)</span><b style='font-size:15px'>"+d.ter+"</b></div></div>";
+ if(d.top)h+="<div class='s' style='margin:6px 0 2px'>Plus grosses lignes</div>"+bars(d.top.slice().sort(function(a,b){return b[1]-a[1]}),function(v){return fm(v,2)+" %"},"var(--c1)");
+ if(d.pays)h+="<div class='s' style='margin:12px 0 4px'>Par pays</div>"+stack(d.pays);
+ if(d.sect)h+="<div class='s' style='margin:12px 0 4px'>Par secteur</div>"+stack(d.sect);
+ h+="<p style='margin:12px 0 4px'>💡 "+d.note+"</p><div class='s'>Source : "+d.src+"</div></div>";
+ /* 3. Cryptos */
+ var ck=["BTC","ETH","XRP","SOL","RNDR","HBAR"],cv=ck.map(function(k){return[k,valK(k)||0]}).filter(function(r){return r[1]>0}).sort(function(a,b){return b[1]-a[1]}),ct=cv.reduce(function(a,r){return a+r[1]},0)||1;
+ h+="<div class='card'><h2>₿ Tes cryptos de l'intérieur</h2><p class='s'>Poids de chaque coin dans ton bloc crypto ("+Math.round(ct)+" €, "+fm(ct/V2*100,0)+" % du portefeuille).</p>"+stack(cv.map(function(r){return[CRY[r[0]][0],r[1]/ct*100]}));
+ var bs=ck.map(function(k){return[k,cst(k,"BTC",365)]}),rows="<tr><th>Coin</th><th>Rôle</th><th>Volatilité / an</th><th>Corrél. BTC</th><th>Pire jour</th></tr>",bsum=0,bn=0;
+ bs.forEach(function(r){var c=CRY[r[0]],s=r[1];if(s&&s.beta!=null&&r[0]!="BTC"){bsum+=s.beta;bn++}rows+="<tr><td>"+c[0]+"</td><td>"+c[1]+"</td><td>"+(s?fm(s.vol,0)+" %":"—")+"</td><td>"+(s&&s.corr!=null?fm(s.corr,2):r[0]=="BTC"?"1":"—")+"</td><td class='dn'>"+(s?fm(s.worst,1)+" %":"—")+"</td></tr>"});
+ h+="<div class='sc' style='margin-top:10px'><table style='min-width:420px'>"+rows+"</table></div>";
+ var btcw=cv.length&&cv[0][0]=="BTC"?cv[0][1]/ct*100:0;
+ h+="<p style='margin:10px 0 0'>💡 "+(btcw?"Bitcoin ne pèse que "+fm(btcw,0)+" % de ton bloc crypto : "+fm(100-btcw,0)+" % est en altcoins. ":"")+(bn?"Sur la période disponible, quand BTC bouge de 1 %, tes altcoins bougent en moyenne de "+fm(bsum/bn,1)+" % dans le même sens : ils amplifient ses hausses et ses baisses.":"Les altcoins amplifient en général les mouvements du Bitcoin.")+"</p>";
+ h+="<div style='margin-top:10px'>"+ck.map(function(k){var c=CRY[k];return "<details style='margin:6px 0'><summary><b>"+c[0]+"</b> <span class='s'>· "+c[1]+"</span></summary><p style='margin:6px 0'>"+c[2]+"</p><p class='s' style='margin:0 0 6px'>Point de vigilance : "+c[3]+"</p></details>"}).join("")+"</div><p class='s'>Volatilité, corrélation et pire jour sont calculés sur l'historique de cours du site. Résumés simplifiés, pas un conseil.</p></div>";
+ el.innerHTML=h;
+ el.querySelectorAll("[data-ex]").forEach(function(b){b.onclick=function(){exSel=b.dataset.ex;renderEx()}})}
+
+/* ===== Détail d'une case (clic) : lignes + courbe ===== */
+var drill=null,drN=90;
+function dd(d){return d?d.slice(8,10)+"/"+d.slice(5,7):""}
+function renderDr(){
+ var el=document.getElementById("dr");if(!el)return;
+ if(!drill){el.innerHTML="<div class='s' style='margin-top:10px'>👆 Touche une case de la carte pour voir ses lignes et sa courbe.</div>";return}
+ var rows=drill.mem.map(function(k){var a=A.filter(function(q){return q[1]==k})[0];return a?{a:a,v:val(a)}:null}).filter(function(r){return r&&r.v!=null}).sort(function(x,y){return y.v-x.v});
+ if(!rows.length){el.innerHTML="";return}
+ var tot=rows.reduce(function(s,r){return s+r.v},0),cost=rows.reduce(function(s,r){return s+r.a[3]},0),g=tot-cost;
+ var dates=Object.keys(L).sort(),last=dates.length?dates[dates.length-1]:null;
+ var ds=last?dates.filter(function(d){return(new Date(last)-new Date(d))/864e5<drN}):[];
+ var lines=rows.map(function(r){var k=r.a[1],ix=1,pts=[0],has=false;ds.forEach(function(d){var p=L[d][k];if(p!=null){ix*=1+p/100;has=true}pts.push((ix-1)*100)});return{k:k,n:r.a[0],w:r.v,pts:pts,has:has}}).filter(function(l){return l.has});
+ var chart="",leg="";
+ if(lines.length&&ds.length>2){
+  var n=ds.length+1,W=lines.reduce(function(s,l){return s+l.w},0),cat=[];
+  for(var i=0;i<n;i++){var sm2=0;lines.forEach(function(l){sm2+=l.w*(1+l.pts[i]/100)});cat.push((sm2/W-1)*100)}
+  var thin=lines.length>1?lines.slice(0,6):[],all=cat.slice();thin.forEach(function(l){all=all.concat(l.pts)});
+  var mn=Math.min.apply(null,all.concat([0])),mx=Math.max.apply(null,all.concat([0])),VW=600,VH=210,pl=44,pr=8,pt=10,pb=22,
+  X=function(i){return pl+i/(n-1)*(VW-pl-pr)},Y=function(v){return pt+(mx-v)/((mx-mn)||1)*(VH-pt-pb)},
+  path=function(a){return a.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1)}).join("")};
+  chart="<svg viewBox='0 0 "+VW+" "+VH+"' style='width:100%;height:auto;display:block'>"+
+   [mx,0,mn].filter(function(v,i,a){return a.indexOf(v)==i}).map(function(v){return "<line x1='"+pl+"' x2='"+(VW-pr)+"' y1='"+Y(v)+"' y2='"+Y(v)+"' style='stroke:var(--mut);stroke-opacity:"+(v==0?.7:.25)+"' stroke-dasharray='"+(v==0?"0":"3 3")+"'/><text x='"+(pl-5)+"' y='"+(Y(v)+4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+fm(v,0)+" %</text>"}).join("")+
+   thin.map(function(l,i){return "<path d='"+path(l.pts)+"' fill='none' stroke='"+PAL[i%PAL.length]+"' stroke-width='1.3' opacity='.8'/>"}).join("")+
+   "<path d='"+path(cat)+"' fill='none' style='stroke:var(--tx)' stroke-width='2.6' stroke-linejoin='round'/>"+
+   "<text x='"+pl+"' y='"+(VH-6)+"' font-size='10' style='fill:var(--mut)'>"+dd(ds[0])+"</text><text x='"+(VW-pr)+"' y='"+(VH-6)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+dd(last)+"</text></svg>";
+  var fc=cat[n-1];
+  leg="<div class='lg' style='margin-top:6px'><span style='--cc:var(--tx)'><b>"+drill.t+"</b> <b class='"+(fc>=0?"up":"dn")+"'>"+f(fc,1)+" %</b></span>"+thin.map(function(l,i){var v=l.pts[l.pts.length-1];return "<span style='--cc:"+PAL[i%PAL.length]+"'>"+l.n+" <span class='"+(v>=0?"up":"dn")+"' style='--cc:transparent'>"+f(v,1)+" %</span></span>"}).join("")+"</div>";
+ }else chart="<div class='s' style='padding:14px 0'>Pas encore d'historique de cours pour ces lignes sur cette période.</div>";
+ var per=[["1 mois",30],["3 mois",90],["6 mois",180],["1 an",365]];
+ var h="<div style='margin-top:14px;border-top:1px solid #2a2e3d;padding-top:12px'><div style='display:flex;justify-content:space-between;align-items:flex-start;gap:8px'><div><h2 style='margin:0'>"+drill.t+(drill.t=="Autres"?" <span class='s'>("+rows.map(function(r){return r.a[1]}).join(", ")+")</span>":"")+"</h2><div class='s'>"+Math.round(tot)+" € · gain "+f(g,0)+" € ("+f(g/cost*100,1)+" %) depuis l'achat</div></div><button class='btn' id='drx'>✕</button></div>"+
+  "<div class='tabs' style='margin:10px 0 6px'>"+per.map(function(p){return "<button data-dn='"+p[1]+"' class='"+(p[1]==drN?"on":"")+"'>"+p[0]+"</button>"}).join("")+"</div>"+chart+leg+
+  "<p class='s' style='margin:6px 0 10px'>Courbe reconstituée avec tes poids actuels, hors versements : ce n'est pas ton historique réel.</p>"+
+  "<div class='sc'><table style='min-width:420px'><tr><th>Ligne</th><th>Valeur</th><th>Part</th><th>Gain</th></tr>"+rows.map(function(r){var gg=r.v-r.a[3];return "<tr><td>"+r.a[0]+"</td><td>"+r.v.toFixed(0)+" €</td><td>"+fm(r.v/tot*100,0)+" %</td><td class='"+(gg>=0?"up":"dn")+"'>"+f(gg,0)+" € ("+f(gg/r.a[3]*100,1)+" %)</td></tr>"}).join("")+"</table></div></div>";
+ el.innerHTML=h;
+ var x=document.getElementById("drx");if(x)x.onclick=function(){drill=null;render()};
+ el.querySelectorAll("[data-dn]").forEach(function(b){b.onclick=function(){drN=+b.dataset.dn;renderDr()}})}
+
+/* ===== Fiabilité des données, rendement réel, alertes (règles modifiables ici) ===== */
+var SEUIL={ligne:20,crypto:30,perime:3}; /* % max d'une ligne, % max crypto, jours avant avertissement */
+var PRM=null;
+fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PRM=j;renderPr()}).catch(function(){});
+function xirr(cf){var t0=cf[0][0];function g(r){return cf.reduce(function(s,c){return s+c[1]/Math.pow(1+r,(c[0]-t0)/315576e5)},0)}
+ var lo=-0.99,hi=10;if(g(lo)*g(hi)>0)return null;for(var i=0;i<100;i++){var m=(lo+hi)/2;if(g(m)*g(lo)>0)lo=m;else hi=m}return(lo+hi)/2}
+function renderPr(){var el=document.getElementById("pr");if(!el)return;
+ var vs=A.map(function(a){return{a:a,v:val(a)}}),V=0,C=0,VV=0;vs.forEach(function(x){V+=x.v!=null?x.v:x.a[3];if(x.v!=null)VV+=x.v;C+=x.a[3]});
+ var org=function(a){var k=a[1];if(O[k]!=null)return"saisie manuelle";if(SUS[k])return"⚠ cours ignoré";if(PX[k]!=null)return"cours auto"+(PRM&&PRM.asof&&PRM.asof[k]?" ("+dd(PRM.asof[k])+")":"");return a[5]!=null?"valeur relevée":"sans valeur"};
+ var al=[],age=PRM&&PRM.updated?(Date.now()-new Date(PRM.updated))/864e5:null;
+ if(age!=null&&age>SEUIL.perime)al.push(["🔴","Cours périmés : dernière mise à jour il y a "+Math.round(age)+" jours. Relance le workflow."]);
+ if(PRM&&PRM.errors&&PRM.errors.length)al.push(["🟠","Cours non mis à jour ce soir : "+PRM.errors.join(", ")+" (dernier cours conservé)."]);
+ Object.keys(SUS).forEach(function(k){al.push(["🟠",k+" : cours incohérent ignoré, vérifie le ticker dans fetch.py."])});
+ vs.forEach(function(x){if(x.v!=null&&VV&&x.v/VV*100>SEUIL.ligne)al.push(["🟡",x.a[0]+" pèse "+fm(x.v/VV*100,0)+" % du portefeuille (seuil "+SEUIL.ligne+" %)."])});
+ var cr=0;vs.forEach(function(x){if(x.v!=null&&x.a[2]=="Crypto")cr+=x.v});if(VV&&cr/VV*100>SEUIL.crypto)al.push(["🟡","Crypto : "+fm(cr/VV*100,0)+" % du portefeuille (seuil "+SEUIL.crypto+" %)."]);
+ var nc=vs.filter(function(x){return PX[x.a[1]]==null&&O[x.a[1]]==null}).map(function(x){return x.a[0]});if(nc.length)al.push(["🔵","Sans cours automatique (valeur figée au dernier relevé) : "+nc.join(", ")+"."]);
+ var h="<h2>🩺 Fiabilité et alertes</h2><p class='s'>Cours du "+(PRM&&PRM.updated?dd(PRM.updated)+"/"+PRM.updated.slice(0,4):"…")+". Seuils modifiables en haut du bloc de code « Fiabilité ».</p>"+(al.length?al.map(function(a){return "<div style='margin:4px 0'>"+a[0]+" "+a[1]+"</div>"}).join(""):"<div>✅ Aucune alerte.</div>")+
+  "<details style='margin-top:8px'><summary>Origine de la valeur de chaque ligne</summary><div class='sc'><table style='min-width:380px'><tr><th>Ligne</th><th>Valeur</th><th>Origine</th></tr>"+vs.map(function(x){return "<tr><td>"+x.a[0]+"</td><td>"+(x.v==null?"—":Math.round(x.v)+" €")+"</td><td>"+org(x.a)+"</td></tr>"}).join("")+"</table></div></details>";
+ var mm=typeof M!=="undefined"?M:null;
+ if(mm){var ks=Object.keys(mm).sort(),cum=0,pts=[],cf=[];ks.forEach(function(k){var t=0;Object.keys(mm[k]).forEach(function(c){t+=mm[k][c]});cum+=t;pts.push(cum);if(Math.abs(t)>0.005)cf.push([new Date(k+"-15").getTime(),-t])});
+  cf.push([Date.now(),V]);var r=cf.length>2?xirr(cf):null,gs=cum?(V/cum-1)*100:0;
+  var W=600,H2=150,pl=44,mx=Math.max(V,cum,1),X=function(i){return pl+i/Math.max(pts.length-1,1)*(W-pl-10)},Y=function(v){return 10+(1-v/mx)*(H2-30)};
+  h+="<h2 style='margin-top:16px'>📈 Rendement réel</h2><div class='kp' style='margin-bottom:8px'><div><span class='s'>Capital versé</span><b>"+Math.round(cum)+" €</b></div><div><span class='s'>Valeur actuelle</span><b>"+Math.round(V)+" €</b></div><div><span class='s'>Gain simple</span><b class='"+(gs>=0?"up":"dn")+"'>"+fm(gs,1)+" %</b></div><div><span class='s'>Rendement annualisé</span><b class='"+(r!=null&&r>=0?"up":"dn")+"'>"+(r==null?"—":fm(r*100,1)+" %")+"</b></div></div>"+
+  "<svg viewBox='0 0 "+W+" "+H2+"' style='width:100%;height:auto;display:block'><path d='"+pts.map(function(v,i){return(i?"L":"M")+X(i).toFixed(1)+","+Y(v).toFixed(1)}).join("")+"' fill='none' stroke='"+PAL[1]+"' stroke-width='2.4'/><circle cx='"+X(pts.length-1)+"' cy='"+Y(V)+"' r='5' fill='"+PAL[0]+"'/><text x='"+(pl-5)+"' y='"+(Y(mx)+4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+Math.round(mx)+" €</text><text x='"+pl+"' y='"+(H2-4)+"' font-size='10' style='fill:var(--mut)'>"+ks[0]+"</text><text x='"+(W-10)+"' y='"+(H2-4)+"' text-anchor='end' font-size='10' style='fill:var(--mut)'>"+ks[ks.length-1]+"</text></svg>"+
+  "<div class='lg' style='margin-top:6px'><span style='--cc:"+PAL[1]+"'>Capital versé cumulé</span><span style='--cc:"+PAL[0]+"'>Valeur actuelle</span></div><p class='s'>Le rendement annualisé tient compte des dates de tes versements (XIRR, versements supposés le 15 de chaque mois). Le gain simple les ignore. Valeur actuelle : lignes sans valeur comptées à leur prix de revient.</p>"}
+ el.innerHTML=h}
+
 </script></body></html>
