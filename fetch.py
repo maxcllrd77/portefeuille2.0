@@ -17,7 +17,7 @@ for k, t in T.items():
             hist.setdefault(str(d.date()), {})[k] = round(float(v), 2)
     except Exception as e:
         print("ERREUR", k, t, e)
-WATCH = {"Nvidia":("NVDA","$"),"Zoom":("ZM","$"),"CrowdStrike":("CRWD","$"),"Zscaler":("ZS","$"),"Sanofi":("SAN.PA","€"),"Clariane":("CLARI.PA","€"),"Volkswagen":("VOW3.DE","€"),"Airbus":("AIR.PA","€"),"Dell":("DELL","$"),"Dollar Tree":("DLTR","$"),"Best Buy":("BBY","$"),"HPE":("HPE","$")}
+WATCH = {"Nvidia":("NVDA","$"),"Dell":("DELL","$"),"HPE":("HPE","$"),"HP Inc":("HPQ","$"),"Autodesk":("ADSK","$"),"Workday":("WDAY","$"),"Analog Devices":("ADI","$"),"CrowdStrike":("CRWD","$"),"Zscaler":("ZS","$"),"Marvell":("MRVL","$"),"Salesforce":("CRM","$"),"Deere":("DE","$"),"Dollar Tree":("DLTR","$"),"Best Buy":("BBY","$"),"Sanofi":("SAN.PA","€"),"Clariane":("CLARI.PA","€"),"Volkswagen":("VOW3.DE","€"),"Airbus":("AIR.PA","€")}
 watch = {}
 for n, (t, cur) in WATCH.items():
     try:
