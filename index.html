@@ -64,11 +64,20 @@ body.priv #pf .kp b,body.priv #kp b,body.priv #pf table td,body.priv .donut .lgd
 .pill{display:inline-block;padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:650;margin:3px 6px 0 0}
 .pill.up{background:rgba(52,211,153,.16);color:var(--g)}.pill.dn{background:rgba(248,113,113,.16);color:var(--r)}.pill.n{background:var(--s2);color:var(--mut)}
 .rs p{margin:6px 0 0}
+
+.sn{display:grid;grid-template-columns:1fr 1fr;gap:18px}.sn .s2{min-width:0}.big{font-size:22px;font-weight:700;margin:2px 0;letter-spacing:-.01em}
+.meter{position:relative;height:10px;border-radius:6px;background:linear-gradient(90deg,#f87171,#f59e0b,#a3e635,#34d399);margin:12px 0 5px}
+.meter i{position:absolute;top:-4px;width:6px;height:18px;border-radius:3px;background:var(--tx);transform:translateX(-50%);box-shadow:0 0 0 2px var(--card)}
+.mlab{display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+.lv{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:650;white-space:nowrap}
+.lv.ex{background:rgba(52,211,153,.18);color:var(--g)}.lv.tb{background:rgba(96,165,250,.18);color:var(--a)}.lv.mo{background:rgba(245,158,11,.18);color:#f59e0b}.lv.ma{background:rgba(248,113,113,.18);color:var(--r)}.lv.nd{background:var(--s2);color:var(--mut)}
+@media(max-width:420px){.sn{grid-template-columns:1fr}}
 </style></head><body>
 <div class="wrap">
 <header class="top"><div class="logo">📊</div><div><h1>Mon portefeuille</h1><div class="s" id="sub"></div></div><button id="pv" class="eye" title="Masquer les montants">👁</button></header>
 <div id="pf" class="pf">
 <section id="kp"></section>
+<section class="card" id="sent"></section>
 <section class="card"><h2>Évolution</h2><div class="tabs" id="rg"></div><select id="sel" style="margin-bottom:10px"></select><div id="ch" class="chart"></div><div class="kp" id="chk" style="margin-top:10px"></div></section>
 <section class="card"><h2>Carte des performances</h2><div class="tabs" id="tabs"></div><div id="map"></div><div class="s" id="note" style="margin-top:8px"></div></section>
 <section class="card"><h2>Répartition</h2><div class="tabs" id="dm"></div><div id="dn" class="donut"></div><div id="al" hidden></div><div id="lg" hidden></div></section>
@@ -84,7 +93,13 @@ body.priv #pf .kp b,body.priv #kp b,body.priv #pf table td,body.priv .donut .lgd
 <p><b>✈️ Safran</b><br>✅ Environ -24 % sous son sommet d'août. Bernstein juge les bénéfices 2026 sécurisés. Ventes en hausse de 13 % au T3.<br>⚠️ Objectifs seulement confirmés, investissements plus lourds. Prochaine info clé : 09/02/2027.</p>
 <p><b>🥇 Or</b><br>✅ Il recule alors qu'il sert de protection à long terme. Un dollar moins fort l'aiderait.<br>⚠️ Il n'a pas protégé ton portefeuille ces dernières semaines.</p>
 <p><b>🌍 Ton plan régulier</b><br>✅ Acheter un peu chaque mois, sans chercher le meilleur jour, lisse les à-coups comme ceux de cette semaine (Nvidia +31 % puis -7 %).<br>⚠️ Ton portefeuille est déjà lourd en crypto : regarde « Élargir mon investissement ».</p>
-</div></div></details><details class="acc"><summary><span>📈</span>Projection de mon épargne</summary><div class="inner"><p class="s" id="ph"></p><div class="kp"><div><span class="s">Versement / mois €</span><br><input id="pm" value="100" style="width:90px"></div><div><span class="s">Années</span><br><input id="py" value="10" style="width:70px"></div></div><div class="sc" style="margin-top:8px"><table id="pj"></table></div><p class="s">Hypothèses de rendement par type d'actif, pas des prévisions.</p></div></details><details class="acc"><summary><span>🌱</span>Élargir mon investissement</summary><div class="inner"><p class="s">Des pistes à explorer, pas des conseils personnalisés.</p><div class="sc"><table id="zt"></table></div><div id="sg"></div></div></details><details class="acc"><summary><span>🏁</span>Mon objectif d'épargne</summary><div class="inner"><div class="kp"><div><span class="s">Objectif (€)</span><br><input id="ob" value="5000" style="width:100px"></div><div id="obt" style="flex:3"></div></div></div></details><details class="acc"><summary><span>⚠️</span>Alertes risque</summary><div class="inner"><div id="risk"></div></div></details><details class="acc"><summary><span>💸</span>Frais et revenus</summary><div class="inner"><div class="kp"><div><span class="s">Frais payés</span><b class="dn">57,70 €</b></div><div><span class="s">Taxes</span><b class="dn">4,59 €</b></div><div><span class="s">Dividendes + intérêts</span><b class="up">10,65 €</b></div></div></div></details><details class="acc"><summary><span>📥</span>Importer et exporter</summary><div class="inner"><p class="s">Importer ton CSV Trade Republic (Exportation_de_transactions.csv) : positions, prix moyens et versements sont recalculés.</p><input type="file" id="csvf" accept=".csv,text/csv"><div class="s" id="csvm" style="margin:6px 0 14px"></div><p class="s">Journal des cours : colle ici le JSON du script Colab.</p><textarea id="imp" rows="3" style="width:100%"></textarea><br><button class="btn" id="impb" style="margin-top:8px">Importer</button> <button class="btn" id="ex" style="margin-top:8px;background:var(--s2);color:var(--tx)">Exporter mes positions</button></div></details>
+</div></div></details><details class="acc"><summary><span>📈</span>Projection de mon épargne</summary><div class="inner"><p class="s" id="ph"></p><div class="kp"><div><span class="s">Versement / mois €</span><br><input id="pm" value="100" style="width:90px"></div><div><span class="s">Années</span><br><input id="py" value="10" style="width:70px"></div></div><div class="sc" style="margin-top:8px"><table id="pj"></table></div><p class="s">Hypothèses de rendement par type d'actif, pas des prévisions.</p></div></details><details class="acc" id="scd"><summary><span>🧪</span>Scores de mes actions</summary><div class="inner"><p class="s">Note de 0 à 4 sur 5 axes, calculée automatiquement à partir des données Yahoo (indicatif, pas un avis). Excellent, très bon, moyen, mauvais.</p><div class="sc"><table id="scr"></table></div></div></details>
+<details class="acc" id="dcd"><summary><span>💎</span>Juste valeur (DCF)</summary><div class="inner"><p class="s">Estime ce que vaut une action en actualisant ses flux de trésorerie futurs. Le résultat dépend entièrement de tes hypothèses.</p>
+<div class="kp"><div><span class="s">Action</span><br><select id="dc_k"></select></div><div><span class="s">Flux / action</span><br><input id="dc_f" inputmode="decimal" style="width:90px"></div><div><span class="s">Cours</span><br><input id="dc_p" inputmode="decimal" style="width:90px"></div></div>
+<div class="kp" style="margin-top:8px"><div><span class="s">Croissance %/an</span><br><input id="dc_g" value="8" style="width:80px"></div><div><span class="s">Taux d'actualisation %</span><br><input id="dc_r" value="9" style="width:80px"></div><div><span class="s">Croissance finale %</span><br><input id="dc_t" value="2.5" style="width:80px"></div><div><span class="s">Années</span><br><input id="dc_n" value="10" style="width:70px"></div></div>
+<div class="sc" style="margin-top:8px"><table id="dc_o"></table></div></div></details>
+<details class="acc" id="cmpd"><summary><span>📊</span>Comparer deux actifs</summary><div class="inner"><div class="kp"><div><select id="cp1"></select></div><div><select id="cp2"></select></div></div><div id="cpc" class="chart" style="margin-top:10px"></div><p class="s">Les deux courbes partent de 100 le même jour, pour comparer leurs performances.</p></div></details>
+<details class="acc"><summary><span>🌱</span>Élargir mon investissement</summary><div class="inner"><p class="s">Des pistes à explorer, pas des conseils personnalisés.</p><div class="sc"><table id="zt"></table></div><div id="sg"></div></div></details><details class="acc"><summary><span>🏁</span>Mon objectif d'épargne</summary><div class="inner"><div class="kp"><div><span class="s">Objectif (€)</span><br><input id="ob" value="5000" style="width:100px"></div><div id="obt" style="flex:3"></div></div></div></details><details class="acc"><summary><span>⚠️</span>Alertes risque</summary><div class="inner"><div id="risk"></div></div></details><details class="acc"><summary><span>💸</span>Frais et dividendes</summary><div class="inner"><div class="kp"><div><span class="s">Frais payés</span><b class="dn">57,70 €</b></div><div><span class="s">Taxes</span><b class="dn">4,59 €</b></div><div><span class="s">Dividendes + intérêts</span><b class="up">10,65 €</b></div></div><div id="dvl" style="margin-top:10px"></div></div></details><details class="acc"><summary><span>📥</span>Importer et exporter</summary><div class="inner"><p class="s">Importer ton CSV Trade Republic (Exportation_de_transactions.csv) : positions, prix moyens et versements sont recalculés.</p><input type="file" id="csvf" accept=".csv,text/csv"><div class="s" id="csvm" style="margin:6px 0 14px"></div><p class="s">Journal des cours : colle ici le JSON du script Colab.</p><textarea id="imp" rows="3" style="width:100%"></textarea><br><button class="btn" id="impb" style="margin-top:8px">Importer</button> <button class="btn" id="ex" style="margin-top:8px;background:var(--s2);color:var(--tx)">Exporter mes positions</button></div></details>
 </div>
 <div id="ac" style="display:none"><div class="pane" data-l="📰 Aujourd'hui">
 <div class="card"><h2>Jeudi 26/11</h2><p class="s">D'après Boursorama, Investing.com, Option Finance et CNBC. Pas un conseil.</p>
@@ -205,6 +220,7 @@ function tools(){
  var big=A.filter(function(a){var v=val(a);return v!=null&&(v/a[3]-1)<-0.3}).map(function(a){return a[1]});
  if(big.length)w.push("Plus de -30 % depuis l'achat : "+big.join(", ")+".");
  var sm=A.filter(function(a){return a[3]<20}).length;if(sm>3)w.push(sm+" lignes de moins de 20 € : peu d'impact, beaucoup de suivi.");
+ A.forEach(function(a){var q=ps(a[1]);if(!q||q.length<10)return;var yr=q.slice(-365),hi=Math.max.apply(null,yr.map(function(p){return p[1]})),cu=q[q.length-1][1],dd=(cu/hi-1)*100,c5=per(a[1],5);if(dd<-30)w.push(a[0]+" : "+fm(dd,0)+" % sous son plus haut des 12 derniers mois.");if(c5!==null&&c5<-10)w.push(a[0]+" : "+fm(c5,1)+" % en 5 jours.")});
  document.getElementById("risk").innerHTML=w.length?w.map(function(x){return"<p style='margin:4px 0'>• "+x+"</p>"}).join(""):"Rien d'alarmant détecté.";
  var mv=mavg(),N=function(i){return parseFloat(String(document.getElementById(i).value).replace(",","."))||0},rmI=document.getElementById("rm"),pmI=document.getElementById("pm");
  if(mv.avg>0){if(!rmI.dataset.t)rmI.value=Math.round(mv.avg);if(!pmI.dataset.t)pmI.value=Math.round(mv.avg)}
@@ -281,8 +297,8 @@ function lineChart(el,S){
  var cr=el.querySelector("#cr"),cl=el.querySelector("#cl"),cd=el.querySelector("#cd"),tt=el.querySelector("#tt");
  function mv(e){var r=cr.getBoundingClientRect(),i=Math.round((e.clientX-r.left)/r.width*(n-1));i=Math.max(0,Math.min(n-1,i));var x=X(i);cl.setAttribute("x1",x);cl.setAttribute("x2",x);cl.style.display="";
   cd.innerHTML=S.map(function(s){return"<circle cx='"+x+"' cy='"+Y(s.pts[i][1])+"' r='4.5' fill='"+s.color+"' stroke='var(--card)' stroke-width='2'/>"}).join("");
-  var t="<b>"+fd(S[0].pts[i][0])+"</b>";S.forEach(function(s){t+="<br><span style='color:"+s.color+"'>●</span> "+s.name+" : "+fm(s.pts[i][1])+" €"});
-  if(S.length>1){var gn=S[0].pts[i][1]-S[1].pts[i][1];t+="<br>Gain : <b style='color:"+(gn>=0?"var(--g)":"var(--r)")+"'>"+(gn>=0?"+":"")+fm(gn)+" €</b>"}
+  var t="<b>"+fd(S[0].pts[i][0])+"</b>";S.forEach(function(s){t+="<br><span style='color:"+s.color+"'>●</span> "+s.name+" : "+fm(s.pts[i][1])+(s.u||" €")});
+  if(S[0].gain){var gn=S[0].pts[i][1]-S[1].pts[i][1];t+="<br>Gain : <b style='color:"+(gn>=0?"var(--g)":"var(--r)")+"'>"+(gn>=0?"+":"")+fm(gn)+" €</b>"}
   tt.innerHTML=t;tt.style.display="block";var tw=tt.offsetWidth;tt.style.left=Math.max(0,Math.min(w-tw,x-tw/2))+"px"}
  cr.onpointermove=mv;cr.onpointerdown=mv;cr.onpointerleave=function(){cl.style.display="none";cd.innerHTML="";tt.style.display="none"}}
 function charts(){
@@ -295,17 +311,17 @@ function charts(){
  function cut(a){var l=new Date(a[a.length-1][0]).getTime()-N*864e5;return a.filter(function(p){return new Date(p[0]).getTime()>=l})}
  if(SEL=="pf"){var c=curves();if(!c){el.innerHTML="<p class='s'>Les transactions se chargent depuis GitHub (data/portfolio.json) : cette courbe s'affiche sur ton site GitHub.</p>";kk.innerHTML="";return}
   var vi=c.v.length-1,v=cut(c.v),nn=c.n.slice(c.n.length-v.length);
-  lineChart(el,[{name:"Valeur",color:"#3fa35a",pts:v},{name:"Versé net",color:"#f2a93b",pts:nn,dash:true}]);
+  lineChart(el,[{name:"Valeur",color:"#3fa35a",gain:true,pts:v},{name:"Versé net",color:"#f2a93b",pts:nn,dash:true}]);
   var gv=c.v[vi][1]-c.n[vi][1];kk.innerHTML="<div><span class='s'>Valeur</span><b>"+fm(c.v[vi][1],0)+" €</b></div><div><span class='s'>Versé net</span><b>"+fm(c.n[vi][1],0)+" €</b></div><div><span class='s'>Gain</span><b class='"+(gv>=0?"up":"dn")+"'>"+(gv>=0?"+":"")+fm(gv,0)+" €</b></div>"}
  else{var s=ps(SEL);if(!s){el.innerHTML="";return}var d=cut(s);lineChart(el,[{name:"Cours",color:"#4b8fe0",pts:d}]);var ch=(d[d.length-1][1]/d[0][1]-1)*100;kk.innerHTML="<div><span class='s'>Dernier cours</span><b>"+fm(d[d.length-1][1])+" €</b></div><div><span class='s'>Sur la période</span><b class='"+(ch>=0?"up":"dn")+"'>"+(ch>=0?"+":"")+fm(ch,1)+" %</b></div>"}
  // objectif
  var inv=0;A.forEach(function(a){inv+=a[3]});var ob=parseFloat(String(document.getElementById("ob").value).replace(",","."))||5000;
  document.getElementById("obt").innerHTML="<b>"+fm(inv,0)+" € investis sur "+fm(ob,0)+" €</b> ("+fm(inv/ob*100,0)+" %)<div class='bar'><div style='width:"+Math.min(100,inv/ob*100)+"%'></div></div>";
  document.getElementById("ob").oninput=function(){try{localStorage.setItem("pf8",this.value)}catch(e){}charts()};
- donut();zones();castorKp();heroX()}
+ donut();zones();castorKp();heroX();cmpDraw()}
 function donut(){
- var dm=document.getElementById("dm");dm.innerHTML="";["Par actif","Par classe","Par zone"].forEach(function(t,i){var b=document.createElement("button");b.textContent=t;if(i==DM)b.className="on";b.onclick=function(){DM=i;donut()};dm.appendChild(b)});
- var m={},V=0;A.forEach(function(a){var v=val(a);if(v==null)return;V+=v;var k=DM==0?a[0]:DM==1?a[2]:(ZONE[a[1]]||"Autre");m[k]=(m[k]||0)+v});
+ var dm=document.getElementById("dm");dm.innerHTML="";["Par actif","Par classe","Par zone","Par secteur"].forEach(function(t,i){var b=document.createElement("button");b.textContent=t;if(i==DM)b.className="on";b.onclick=function(){DM=i;donut()};dm.appendChild(b)});
+ var m={},V=0;A.forEach(function(a){var v=val(a);if(v==null)return;V+=v;var k=DM==0?a[0]:DM==1?a[2]:DM==2?(ZONE[a[1]]||"Autre"):(SECT[a[1]]||"Autre");m[k]=(m[k]||0)+v});
  var it=Object.keys(m).map(function(k){return{n:k,v:m[k]}}).sort(function(a,b){return b.v-a.v});
  if(DM==0&&it.length>9){var r=it.slice(8).reduce(function(a,b){return a+b.v},0);it=it.slice(0,8);it.push({n:"Autres",v:r})}
  var C=2*Math.PI*70,off=0,svg="<svg width='200' height='200' viewBox='0 0 200 200'>",lg="";
@@ -366,12 +382,51 @@ function heroX(){var kp=document.getElementById("kp");if(!kp)return;["spark","tf
  if(b&&w){var g=function(x){return(x>=0?"+":"")+x.toFixed(1)+" %"};kp.insertAdjacentHTML("beforeend","<div class='tf'><span class='s'>Dernière séance</span><br><span class='chip up'>▲ "+b[0]+" "+g(b[1])+"</span><span class='chip dn'>▼ "+w[0]+" "+g(w[1])+"</span></div>")}}
 try{if(localStorage.getItem("pf11")=="1")document.body.classList.add("priv")}catch(e){}
 document.getElementById("pv").onclick=function(){document.body.classList.toggle("priv");try{localStorage.setItem("pf11",document.body.classList.contains("priv")?"1":"0")}catch(e){}};
+var MK={VIX:{px:28.29,old:1}},FN={},FG={v:11,c:"Extreme Fear",old:1},DV=[];
+var SECT={SAF:"Aéro & défense",SPCX:"Aéro & défense",LVMH:"Luxe",AI:"Industrie & matériaux",AAPL:"Tech",BABA:"Tech",FLNC:"Énergie",URA:"Énergie",ATEL:"Télécom",SPX:"ETF diversifié",EM:"ETF diversifié",SXXP:"ETF diversifié",AFR:"ETF diversifié",GOLD:"Or",BTC:"Crypto",ETH:"Crypto",XRP:"Crypto",SOL:"Crypto",RNDR:"Crypto",HBAR:"Crypto",APO:"Private equity"};
+function sentiment(){var el=document.getElementById("sent");if(!el)return;var v=MK.VIX;if(!v)return;var px=v.px,sc=Math.max(0,Math.min(100,(40-px)/28*100)),lab=px<15?"Calme":px<20?"Normal":px<30?"Nerveux":px<40?"Peur":"Panique";
+ var col=px<15?"#34d399":px<20?"#a3e635":px<30?"#f59e0b":"#f87171";
+ var fl={"Extreme Fear":"Peur extrême","Fear":"Peur","Neutral":"Neutre","Greed":"Avidité","Extreme Greed":"Avidité extrême"},fv=FG?FG.v:null,fcol=fv===null?"#8b98b3":fv<25?"#f87171":fv<45?"#f59e0b":fv<55?"#a3e635":"#34d399";
+ var h="<h2>Sentiment du marché</h2><div class='sn' style='margin-top:10px'><div class='s2'><div class='s'>Actions · VIX</div><div class='big' style='color:"+col+"'>"+lab+"</div><div class='meter'><i style='left:"+sc+"%'></i></div><div class='mlab'><span>Peur</span><span>Avidité</span></div><p class='s'>VIX "+fm(px,1)+(v.avg30?" · moyenne 30 j "+fm(v.avg30,1):"")+(v.pct!=null?" · plus haut que "+v.pct+" % des jours de l'année":"")+"</p></div>";
+ if(fv!==null)h+="<div class='s2'><div class='s'>Crypto · Peur &amp; Avidité</div><div class='big' style='color:"+fcol+"'>"+(fl[FG.c]||FG.c)+" ("+fv+")</div><div class='meter'><i style='left:"+fv+"%'></i></div><div class='mlab'><span>Peur</span><span>Avidité</span></div><p class='s'>"+(FG.w!=null?"Il y a 7 j : "+FG.w+" · il y a 30 j : "+FG.m:"")+"</p></div>";
+ h+="</div>";
+ var names=Object.keys(MK).filter(function(k){return k!="VIX"});
+ if(names.length){var f=function(x,p){return"<td class='"+(x>=0?"up":"dn")+"'>"+(x>=0?"+":"")+fm(x,p?2:1)+(p?" pt":" %")+"</td>"};h+="<div class='sc' style='margin-top:10px'><table><tr><th>Marché</th><th>Niveau</th><th>1 j</th><th>5 j</th><th>1 mois</th></tr>";names.forEach(function(k){var x=MK[k];h+="<tr><td>"+k+"</td><td>"+fm(x.px)+(x.pts?" %":"")+"</td>"+f(x.d,x.pts)+f(x.w,x.pts)+f(x.m,x.pts)+"</tr>"});h+="</table></div>"}
+ h+="<p class='s'>Le VIX mesure la nervosité attendue sur le S&amp;P 500 sur 30 jours : sous 15 le marché est calme, de 20 à 30 il est nerveux, au-dessus de 30 la peur domine. Un VIX élevé accompagne souvent les creux de marché, sans garantie."+(v.old?" Relevé du 25/11 : en attente de la mise à jour automatique.":"")+"</p>";
+ el.innerHTML=h}
+function lvl(p){return p===null?["n/d","nd"]:p>=4?["Excellent","ex"]:p==3?["Très bon","tb"]:p==2?["Moyen","mo"]:["Mauvais","ma"]}
+function ax(a,b){var v=[a,b].filter(function(x){return x!==null});if(!v.length)return null;var s=v.reduce(function(x,y){return x+y},0);return v.length==1?s*2:s}
+function Tq(x,hi,mid){return x==null?null:x>=hi?2:x>=mid?1:0}
+function sc5(f){var up=f.tgt&&f.price?(f.tgt/f.price-1)*100:null,dy=f.dyr&&f.price?f.dyr/f.price*100:null,p=function(x){return x!=null?x*100:null};
+ return{p:ax(Tq(p(f.roe),20,10),Tq(p(f.om),20,10)),c:ax(Tq(p(f.rg),15,5),Tq(p(f.eg),15,5)),s:ax(f.de==null?null:f.de<50?2:f.de<100?1:0,f.cr==null?null:f.cr>=1.5?2:f.cr>=1?1:0),f:ax(f.rec==null?null:f.rec<=2?2:f.rec<=2.6?1:0,Tq(up,15,5)),d:dy==null||dy==0?null:ax(Tq(dy,3,1),f.pr==null?null:f.pr<0.6?2:f.pr<0.9?1:0),dy:dy}}
+function nmK(k){var a=A.filter(function(x){return x[1]==k})[0];return a?a[0]:k}
+function scoresR(){var el=document.getElementById("scr");if(!el)return;var ks=Object.keys(FN);if(!ks.length){el.innerHTML="<tr><td class='s'>Les données arrivent avec la mise à jour automatique des cours (GitHub).</td></tr>";return}
+ var h="<tr><th>Action</th><th>Rentabilité</th><th>Croissance</th><th>Santé</th><th>Perspectives</th><th>Dividende</th></tr>";
+ ks.forEach(function(k){var s=sc5(FN[k]),c=function(p,z){var l=lvl(p);return"<td><span class='lv "+l[1]+"'>"+(z&&p===null?"Aucun":l[0])+"</span></td>"};h+="<tr><td>"+nmK(k)+"</td>"+c(s.p)+c(s.c)+c(s.s)+c(s.f)+c(s.d,1)+"</tr>"});
+ el.innerHTML=h}
+function dcfR(){var sl=document.getElementById("dc_k");if(!sl)return;var o="<option value=''>Manuel</option>";Object.keys(FN).forEach(function(k){var f=FN[k];if(f.fcf&&f.sh&&f.price)o+="<option value='"+k+"'>"+nmK(k)+"</option>"});
+ if(sl.dataset.o!=o){var cu=sl.value;sl.innerHTML=o;sl.dataset.o=o;sl.value=cu}
+ dcf()}
+function dcf(){var G=function(i){return parseFloat(String(document.getElementById(i).value).replace(",","."))||0},f0=G("dc_f"),p=G("dc_p"),g=G("dc_g")/100,r=G("dc_r")/100,gt=G("dc_t")/100,n=Math.max(1,Math.round(G("dc_n"))),o=document.getElementById("dc_o");
+ if(r<=gt||f0<=0){o.innerHTML="<tr><td class='s'>Renseigne un flux de trésorerie par action positif et un taux d'actualisation supérieur à la croissance finale.</td></tr>";return}
+ var s=0,c=f0;for(var t=1;t<=n;t++){c*=1+g;s+=c/Math.pow(1+r,t)}var tv=c*(1+gt)/(r-gt)/Math.pow(1+r,n),fv=s+tv,up=p?(fv/p-1)*100:0,ms=p?(fv-p)/fv*100:0,ver=!p?"":up>=20?"Sous-évaluée selon tes hypothèses":up>=-10?"Autour de sa valeur selon tes hypothèses":"Chère selon tes hypothèses";
+ o.innerHTML="<tr><td>Juste valeur estimée</td><td><b>"+fm(fv)+"</b></td></tr>"+(p?"<tr><td>Cours actuel</td><td>"+fm(p)+"</td></tr><tr><td>Écart avec la juste valeur</td><td class='"+(up>=0?"up":"dn")+"'>"+(up>=0?"+":"")+fm(up,0)+" %</td></tr><tr><td>Marge de sécurité</td><td class='"+(ms>=0?"up":"dn")+"'>"+fm(ms,0)+" %</td></tr><tr><td colspan='2'><b>"+ver+"</b></td></tr>":"")+"<tr><td colspan='2' class='s'>Part de la valeur finale dans le total : "+fm(tv/fv*100,0)+" %. Change les hypothèses pour voir l'effet.</td></tr>"}
+function dcfFill(){var k=document.getElementById("dc_k").value,f=FN[k];if(f&&f.fcf&&f.sh){document.getElementById("dc_f").value=(f.fcf/f.sh).toFixed(2);document.getElementById("dc_p").value=f.price.toFixed(2)}dcf()}
+function dvR(){var el=document.getElementById("dvl");if(!el)return;if(!DV.length){el.innerHTML="";return}var tot=DV.reduce(function(a,x){return a+x[2]},0),h="<div class='s'>Dividendes et intérêts reçus : "+fm(tot)+" €</div><div class='sc'><table>";DV.slice(-8).reverse().forEach(function(x){h+="<tr><td>"+fd(x[0])+"</td><td>"+x[1]+"</td><td class='up'>+"+fm(x[2])+" €</td></tr>"});el.innerHTML=h+"</table></div>"}
+function cmpDraw(){var a=document.getElementById("cp1"),b=document.getElementById("cp2"),el=document.getElementById("cpc");if(!a||!b)return;var opts="";A.forEach(function(x){if(ps(x[1]))opts+="<option value='"+x[1]+"'>"+x[0]+"</option>"});
+ if(a.dataset.o!=opts){a.innerHTML=opts;b.innerHTML=opts;a.dataset.o=opts;if(b.options.length>1)b.selectedIndex=1}
+ var s1=ps(a.value),s2=ps(b.value);if(!s1||!s2){el.innerHTML="<p class='s'>Les cours se chargent depuis GitHub.</p>";return}
+ var m2={};s2.forEach(function(p){m2[p[0]]=p[1]});var cd=s1.filter(function(p){return m2[p[0]]!=null});if(cd.length<2){el.innerHTML="";return}
+ var b1=cd[0][1],b2=m2[cd[0][0]];lineChart(el,[{name:nmK(a.value),color:"#60a5fa",u:" (base 100)",pts:cd.map(function(p){return[p[0],p[1]/b1*100]})},{name:nmK(b.value),color:"#f59e0b",u:" (base 100)",pts:cd.map(function(p){return[p[0],m2[p[0]]/b2*100]})}])}
+document.getElementById("cp1").onchange=cmpDraw;document.getElementById("cp2").onchange=cmpDraw;document.getElementById("cmpd").addEventListener("toggle",cmpDraw);
+document.getElementById("dc_k").onchange=dcfFill;["dc_f","dc_p","dc_g","dc_r","dc_t","dc_n"].forEach(function(i){document.getElementById(i).oninput=dcf});
+sentiment();scoresR();dcfR();
 sub("ac");sub("fuc");roll();bets();castor();
 var _r2=render;render=function(){_r2();charts()};
 window.addEventListener("resize",charts);
 
-fetch("data/portfolio.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){TX=j.T||[];ANC=j.anchor||"";CF=j.castor||[];cT();castorKp();if(j.generated>((S&&S.ts)||"")){A=j.A;M=j.M}render()}).catch(function(){});
-fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PX=j.px||{};WL=j.watch||{};wl();Object.keys(j.hist||{}).forEach(function(d){L[d]=Object.assign(L[d]||{},j.hist[d])});document.getElementById("sub").textContent+=" · cours du "+j.updated;render()}).catch(function(){});
+fetch("data/portfolio.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){TX=j.T||[];DV=j.Dv||[];dvR();ANC=j.anchor||"";CF=j.castor||[];cT();castorKp();if(j.generated>((S&&S.ts)||"")){A=j.A;M=j.M}render()}).catch(function(){});
+fetch("data/prices.json?"+Date.now()).then(function(r){return r.json()}).then(function(j){PX=j.px||{};WL=j.watch||{};wl();MK=j.market||MK;FN=j.fund||{};FG=j.fng||FG;sentiment();scoresR();dcfR();Object.keys(j.hist||{}).forEach(function(d){L[d]=Object.assign(L[d]||{},j.hist[d])});document.getElementById("sub").textContent+=" · cours du "+j.updated;render()}).catch(function(){});
 fetch("news.html?"+Date.now()).then(function(r){return r.text()}).then(function(t){var p=t.split("<!--FU-->");document.getElementById("ac").innerHTML=p[0];var q=(p[1]||"").split("<!--ID-->");document.getElementById("fuc").innerHTML=q[0];if(q[1])document.getElementById("idees").innerHTML=q[1];bets();sub("ac");sub("fuc");roll();wl()}).catch(function(){});
 render();
 
