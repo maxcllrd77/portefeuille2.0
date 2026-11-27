@@ -4,6 +4,7 @@ T = {"SAF":"SAF.PA","SPX":"SXR8.DE","EM":"IS3N.DE","SXXP":"EXSA.DE","GOLD":"GOLD
      "BTC":"BTC-EUR","ETH":"ETH-EUR","XRP":"XRP-EUR","SOL":"SOL-EUR",
      "RNDR":"RENDER-USD","HBAR":"HBAR-USD","BABA":"BABA","AI":"AI.PA","LVMH":"MC.PA","AAPL":"AAPL","FLNC":"FLNC"}
 USD = {"RENDER-USD","HBAR-USD","BABA","AAPL","FLNC"}
+ADR = {"BABA": 8}  # 1 ADR Alibaba = 8 actions ordinaires (celles que tu detiens)
 WATCH = {"Nvidia":("NVDA","$"),"Dell":("DELL","$"),"HPE":("HPE","$"),"HP Inc":("HPQ","$"),"Autodesk":("ADSK","$"),"Workday":("WDAY","$"),"Analog Devices":("ADI","$"),"CrowdStrike":("CRWD","$"),"Zscaler":("ZS","$"),"Marvell":("MRVL","$"),"Salesforce":("CRM","$"),"Deere":("DE","$"),"Dollar Tree":("DLTR","$"),"Best Buy":("BBY","$"),"Sanofi":("SAN.PA","€"),"Clariane":("CLARI.PA","€"),"Volkswagen":("VOW3.DE","€"),"Airbus":("AIR.PA","€")}
 MKT = {"S&P 500":"^GSPC","Nasdaq":"^IXIC","CAC 40":"^FCHI","Taux US 10 ans":"^TNX","Dollar (DXY)":"DX-Y.NYB"}
 STK = {"SAF":"SAF.PA","LVMH":"MC.PA","AI":"AI.PA","AAPL":"AAPL","BABA":"BABA","FLNC":"FLNC"}
@@ -25,6 +26,7 @@ for k, t in T.items():
         c = close(t)
         if t in USD:
             c = c / fx.reindex(c.index).ffill().bfill()
+        c = c / ADR.get(k, 1)
         px[k] = round(float(c.iloc[-1]), 4)
         for d, v in (c.pct_change().dropna() * 100).items():
             hist.setdefault(str(d.date()), {})[k] = round(float(v), 2)
